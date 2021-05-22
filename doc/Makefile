@@ -1,4 +1,5 @@
 # Minimal makefile for Sphinx documentation
+# check with cat -e -t -v $makefilename
 #
 
 # You can set these variables from the command line, and also
