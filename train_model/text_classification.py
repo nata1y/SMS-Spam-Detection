@@ -3,6 +3,7 @@ Train the model using different algorithms.
 Creates 3 files in output: `accuracy_scores.png`,
 `model.joblib`, and `misclassified_msgs.txt`.
 """
+from datetime import datetime
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -26,11 +27,19 @@ def my_train_test_split(*datasets):
     '''
     return train_test_split(*datasets, test_size=0.3, random_state=101)
 
+
 def train_classifier(classifier, X_train, y_train):
     classifier.fit(X_train, y_train)
 
+
+def save_classifier(classifier, name):
+    now = datetime.now()
+    dump(classifier, 'output/{}_{}.joblib'.format(name, now.strftime("%m-%d-%Y")), compress=0, protocol=4)
+
+
 def predict_labels(classifier, X_test):
     return classifier.predict(X_test)
+
 
 def main():
 
@@ -90,7 +99,11 @@ def main():
     plt.savefig("output/accuracy_scores.png")
 
     # Store "best" classifier
-    dump(classifiers['Decision Tree'], 'output/model.joblib')
+    # dump(classifiers['Decision Tree'], 'output/model.joblib')
+
+    best_clf = accuracy['Accuracy Rate'].idxmax()
+    save_classifier(classifiers[best_clf], best_clf.lower().replace(' ', '-'))
+
 
 if __name__ == "__main__":
     main()

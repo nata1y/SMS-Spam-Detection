@@ -17,6 +17,7 @@ from sklearn.preprocessing import FunctionTransformer
 from sklearn.pipeline import make_union, make_pipeline
 from joblib import dump, load
 
+
 def _load_data():
     messages = pd.read_csv(
         'dataset/SMSSpamCollection',
@@ -72,6 +73,7 @@ def _preprocess(messages):
     dump(preprocessed_data, 'output/preprocessed_data.joblib')
     return preprocessed_data
 
+
 def prepare(message):
     preprocessor = load('output/preprocessor.joblib')
     return preprocessor.transform([message])
@@ -83,6 +85,7 @@ def main():
     with pd.option_context('expand_frame_repr', False):
         print(messages)
     _preprocess(messages)
+
 
 if __name__ == "__main__":
     main()
