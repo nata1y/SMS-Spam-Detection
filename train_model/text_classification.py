@@ -16,9 +16,12 @@ from sklearn.metrics import accuracy_score, classification_report
 from joblib import dump, load
 import matplotlib
 import matplotlib.pyplot as plt
+
+from deploy_model.util import ensure_path_exists
 from text_preprocessing import _load_data
 
 pd.set_option('display.max_colwidth', None)
+ensure_path_exists('output')
 
 
 def my_train_test_split(*datasets):

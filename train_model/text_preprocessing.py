@@ -10,7 +10,11 @@ import string
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
+
+from deploy_model.util import ensure_path_exists
+
 nltk.download('stopwords')
+ensure_path_exists('output')
 
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.preprocessing import FunctionTransformer
@@ -25,6 +29,7 @@ def _load_data():
         names=['label', 'message']
     )
     return messages
+
 
 def _text_process(data):
     '''
@@ -49,9 +54,11 @@ def _text_process(data):
 
     return clean_msgs
 
+
 def _extract_message_len(data):
     # return as np.array and reshape so that it works with make_union
     return np.array([len(message) for message in data]).reshape(-1, 1)
+
 
 def _preprocess(messages):
     '''

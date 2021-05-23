@@ -10,21 +10,33 @@ from flasgger import Swagger
 import pandas as pd
 import os
 
+from deploy_model.util import ensure_path_exists
 from train_model.text_preprocessing import prepare, _extract_message_len, _text_process
 
 app = Flask(__name__)
 swagger = Swagger(app)
+classifier_name = None
+ensure_path_exists('output/stats')
+
+try:
+    stats = pd.read_csv('output/stats/stats_from_wild.csv')
+except Exception as e:
+    print(e)
+    stats = pd.DataFrame([], columns=["result", "prob_spam", "classifier", "sms"])
+    stats.to_csv('output/stats/stats_from_wild.csv')
 
 
 def load_best_clf():
+    global classifier_name
     file_to_load, latest_date = 'model.joblib', datetime.strptime('01-01-1970', "%m-%d-%Y")
+    print(os.listdir('output'))
     for filename in os.listdir('output'):
         if filename.endswith(".joblib"):
             try:
                 if latest_date < datetime.strptime(filename.split('_')[1].split('.')[0], "%m-%d-%Y"):
                     file_to_load = filename
                     latest_date = datetime.strptime(filename.split('_')[1].split('.')[0], "%m-%d-%Y")
-                    print(latest_date)
+                    classifier_name = filename.split('_')[0]
             except Exception as e:
                 print(e)
 
@@ -54,15 +66,24 @@ def predict():
       200:
         description: "The result of the classification: 'spam' or 'ham'."
     """
+    global stats
     input_data = request.get_json()
     sms = input_data.get('sms')
     processed_sms = prepare(sms)
     model = load_best_clf()
     prediction = model.predict(processed_sms)[0]
 
+    stats = stats.append({
+                    "result": prediction,
+                    "prob_spam": model.predict_proba(processed_sms)[0],
+                    "classifier": classifier_name,
+                    "sms": sms
+                }, ignore_index=True)
+    stats.to_csv()
+
     return jsonify({
         "result": prediction,
-        "classifier": "decision tree",
+        "classifier": classifier_name,
         "sms": sms
     })
 
@@ -95,7 +116,7 @@ def dumb_predict():
 
     return jsonify({
         "result": "Spam",
-        "classifier": "decision tree",
+        "classifier": classifier_name,
         "sms": sms
     })
 
