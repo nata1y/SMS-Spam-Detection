@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 
 from deploy_model.util import ensure_path_exists
 from text_preprocessing import _load_data
+from train_model.nlp_sms_model import train_nlp_model, doc_distance
 
 pd.set_option('display.max_colwidth', None)
 ensure_path_exists('output')
@@ -47,6 +48,7 @@ def predict_labels(classifier, X_test):
 def main():
 
     raw_data = _load_data()
+    train_nlp_model(raw_data)
     preprocessed_data = load('output/preprocessed_data.joblib')
 
     (X_train, X_test,

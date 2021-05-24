@@ -10,6 +10,7 @@ from flasgger import Swagger
 import pandas as pd
 import os
 
+from deploy_model.proccess_stats import compare_nlp_models, compare_loss_dist
 from deploy_model.util import ensure_path_exists
 from train_model.text_preprocessing import prepare, _extract_message_len, _text_process
 
@@ -79,7 +80,12 @@ def predict():
                     "classifier": classifier_name,
                     "sms": sms
                 }, ignore_index=True)
-    stats.to_csv()
+    stats.to_csv('output/stats/stats_from_wild.csv')
+
+    # take latest 1000 message batch for drift detection
+    if stats.shape[0] % 1000 == 0 and stats:
+        compare_nlp_models(stats["sms"].tolist()[-1000:])
+        compare_loss_dist(stats["sms"].tolist()[-1000:])
 
     return jsonify({
         "result": prediction,
