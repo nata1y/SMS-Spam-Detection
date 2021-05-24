@@ -18,6 +18,7 @@ app = Flask(__name__)
 swagger = Swagger(app)
 classifier_name = None
 ensure_path_exists('output/stats')
+stats = None
 
 try:
     stats = pd.read_csv('output/stats/stats_from_wild.csv')
@@ -82,10 +83,9 @@ def predict():
                 }, ignore_index=True)
     stats.to_csv('output/stats/stats_from_wild.csv')
 
-    # take latest 1000 message batch for drift detection
     if stats.shape[0] % 1000 == 0 and stats:
         compare_nlp_models(stats["sms"].tolist()[-1000:])
-        compare_loss_dist(stats["sms"].tolist()[-1000:])
+        compare_loss_dist(stats["sms"].tolist()[-1000:], model)
 
     return jsonify({
         "result": prediction,

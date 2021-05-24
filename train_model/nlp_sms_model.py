@@ -12,7 +12,10 @@ ensure_path_exists('output/nlp_drift')
 def doc_distance(doc):
     gold_standard = load('output/nlp_drift/train_data_tfidf.joblib')
     nlp_model = load('output/nlp_drift/nlp_model.joblib')
-    return kl_divergence(gold_standard.data, nlp_model.transform(doc['message']).data)
+    gold_standard_features = nlp_model.get_feature_names()
+    print(gold_standard_features)
+    quit()
+    return kl_divergence(gold_standard.data, nlp_model.transform(doc).data)
 
 
 def train_nlp_model(messages):

@@ -1,3 +1,4 @@
+import random
 from datetime import datetime
 
 from deploy_model.util import ensure_path_exists
@@ -5,6 +6,7 @@ from train_model.nlp_sms_model import doc_distance
 import pandas as pd
 
 ensure_path_exists('output/stats')
+amount_subsamples = 10
 
 try:
     stats_nlp = pd.read_csv('output/stats/nlp_stats.csv')
@@ -24,8 +26,10 @@ except Exception as e:
     stats_loss.to_csv('output/stats/loss_stats.csv')
 
 
-def compare_loss_dist(doc):
-    pass
+def compare_loss_dist(doc, model):
+    for i in range(amount_subsamples):
+        samples = random.sample(doc['message'], 100)
+        res = model.predict(samples)
 
 
 def compare_nlp_models(doc):
