@@ -1,3 +1,5 @@
+import copy
+
 import pandas as pd
 from joblib import load
 
@@ -8,6 +10,7 @@ from deploy_model.serve_model import load_best_clf, classifier_name, stats as ge
 
 
 def main():
+    stats = general_stats
     data = pd.read_csv(
         'dataset/SMSSpamCollection',
         sep='\t',
@@ -20,7 +23,7 @@ def main():
         processed_sms = prepare(row['message'])
         prediction = model.predict(processed_sms)[0]
 
-        stats = general_stats.append({
+        stats = stats.append({
             "result": prediction,
             "prob_spam": model.predict_proba(processed_sms)[0],
             "classifier": classifier_name,
@@ -33,7 +36,7 @@ def main():
             print(row['message'])
             print(prediction)
             compare_nlp_models(stats["sms"].tolist()[-1000:])
-            compare_loss_dist(stats["sms"].tolist()[-1000:], model)
+            compare_loss_dist(stats["sms"].tolist()[-1000:], copy.deepcopy(model))
 
 
 if __name__ == '__main__':
