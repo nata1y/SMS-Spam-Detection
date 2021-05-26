@@ -11,6 +11,7 @@ a) Clone repo.
 ```
 $ git clone https://github.com/luiscruz/SMS-Spam-Detection.git
 $ cd SMS-Spam-Detection
+$ mkdir output
 ```
 
 b) Install dependencies.
@@ -19,6 +20,13 @@ b) Install dependencies.
 $ python -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirements.txt
+```
+
+b2) Alternatively, use Docker for dependencies and volumes.
+
+```
+$ docker build --progress plain . -t docker-sms
+$ docker run -it --rm -v "$(pwd)":/root/project -p "8080:8080" docker-sms
 ```
 
 c) Run various scripts
@@ -31,6 +39,8 @@ $ python src/text_classification.py
 ```
 
 d) Serve the model as a REST API
+
+NOTE: add `host="0.0.0.0"` to `app.run` in `src/serve_model.py`. (default 127.0.0.1 does not work in Docker)
 
 ```
 $ python src/serve_model.py
