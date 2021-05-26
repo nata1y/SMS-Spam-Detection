@@ -27,29 +27,32 @@ b2) Alternatively, use Docker for dependencies and volumes.
 ```
 $ docker build --progress plain . -t docker-sms
 $ docker run -it --rm -v "$(pwd)":/root/project -p "8080:8080" docker-sms
+~# $ cd project
 ```
 
 c) Run various scripts
 
 ```
-$ python src/get_data.py
-$ python src/read_data.py
-$ python src/text_preprocessing.py
-$ python src/text_classification.py
+$ python train_model/get_data.py
+$ python train_model/read_data.py
+$ python train_model/text_preprocessing.py
+$ python train_model/text_classification.py
 ```
 
 d) Serve the model as a REST API
 
-NOTE: add `host="0.0.0.0"` to `app.run` in `src/serve_model.py`. (default 127.0.0.1 does not work in Docker)
+NOTE: add `host="0.0.0.0"` parameter to `app.run` call in `deploy_model/serve_model.py`. (default 127.0.0.1 does not work in Docker)
 
 ```
-$ python src/serve_model.py
+$ python deploy_model/serve_model.py
 ```
 
 You can test the API using the following:
 
 ```
-curl -X POST "http://127.0.0.1:8080/predict" -H  "accept: application/json" -d "{sms: hello world!}"
+$ curl -X POST "http://127.0.0.1:8080/predict" -H  "accept: application/json" -d "{sms: hello world!}"
+or
+$ curl -X POST "http://127.0.0.1:8080/predict" -H  "Content-Type: application/json" -d '{"sms": "hello world!"}'
 ```
 
 Alternatively, you can access the UI using your browser: http://127.0.0.1:8080/apidocs
