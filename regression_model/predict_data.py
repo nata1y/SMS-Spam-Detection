@@ -4,11 +4,10 @@ import numpy as np
 
 from get_predictions import _load_data
 
-from sklearn.svm import SVC
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, BaggingClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
-from joblib import dump, load
+from joblib import load
 
 def _get_predictions():
     predictions = pd.read_csv(
@@ -38,15 +37,25 @@ def main():
     print(df)
     preprocessed_data = load('regression_output/preprocessed_data.joblib')
 
+    labels = []
+    for label in raw_data['label']:
+        if label == 'ham':
+            labels = np.append(labels, np.array([0]))
+        elif label == 'spam':
+            labels = np.append(labels, np.array([1]))
+        else:
+            labels = np.append(labels, np.array([0.5]))
+
     (X_train, X_test,
      y_train, y_test,
      _, test_messages) = my_train_test_split(preprocessed_data,
                                              raw_data['label'],
                                              raw_data['message'])
+    print(y_test)
 
-    svc = AdaBoostClassifier()
-    train_classifier(svc, X_train, y_train)
-    pred = predict_labels(svc, X_test)
+    classifier = LogisticRegression()
+    train_classifier(classifier, X_train, y_train)
+    pred = predict_labels(classifier, X_test)
     pred_scores = [accuracy_score(y_test, pred)]
 
     print(classification_report(y_test, pred))
@@ -58,9 +67,9 @@ def main():
                                              df['result'],
                                              raw_data['message'])
 
-    svc = AdaBoostClassifier()
-    train_classifier(svc, X_train, y_train)
-    pred = predict_labels(svc, X_test)
+    classifier = LogisticRegression()
+    train_classifier(classifier, X_train, y_train)
+    pred = predict_labels(classifier, X_test)
     pred_scores = [accuracy_score(y_test, pred)]
 
     print(classification_report(y_test, pred))

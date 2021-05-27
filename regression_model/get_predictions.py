@@ -15,7 +15,7 @@ ensure_path_exists('regression_output')
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.pipeline import make_union, make_pipeline
-from joblib import dump, load
+from joblib import dump
 
 def _load_data():
     messages = pd.read_csv(
