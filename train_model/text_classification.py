@@ -20,7 +20,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 from deploy_model.util import ensure_path_exists
-from text_preprocessing import _load_data
+from train_model.text_preprocessing import _load_data
 from train_model.nlp_sms_model import train_nlp_model, doc_distance
 
 pd.set_option('display.max_colwidth', None)
