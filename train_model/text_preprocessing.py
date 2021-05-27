@@ -10,6 +10,7 @@ import string
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
+from sklearn import preprocessing
 
 from deploy_model.util import ensure_path_exists
 
@@ -76,8 +77,11 @@ def _preprocess(messages):
     )
 
     preprocessed_data = preprocessor.fit_transform(messages['message'])
+    le = preprocessing.LabelEncoder()
+    le.fit(messages['label'])
     dump(preprocessor, 'output/preprocessor.joblib')
     dump(preprocessed_data, 'output/preprocessed_data.joblib')
+    dump(le, 'output/label_encoder.joblib')
     return preprocessed_data
 
 

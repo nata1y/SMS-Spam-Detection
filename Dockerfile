@@ -10,6 +10,7 @@ WORKDIR /root/
 ENV VIRTUAL_ENV=/root/venv
 RUN python -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+ENV PYTHONPATH="${PYTHONPATH}:/root/project/"
 
 COPY requirements.txt .
 RUN python -m pip install --upgrade pip &&\
