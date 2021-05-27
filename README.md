@@ -53,6 +53,8 @@ Retrieves and splits the dataset from the first 1000 labels on which the model i
 Get the predictions via HTTP requests from the model like in an actual deployment setup.
 Run LogisticRegression on the predicted set, actual set and model set for comparison.
 
+NOTE: to get predictions from inside another docker container use `docker run -it --rm -v "$(pwd)":/root/project --net=host docker-sms`, since the port is already opened for the server, but you want to connect to its local network.
+
 ```
 $ python regression_model/get_data.py
 $ python regression_model/read_data.py
