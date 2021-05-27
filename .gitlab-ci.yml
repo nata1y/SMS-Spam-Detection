@@ -27,6 +27,7 @@ before_script:
 test:
   script:
     - python train_model/get_data.py
+    - python setup.py install
     - python setup.py test
     - pip install tox flake8
     - tox -e python flake8
