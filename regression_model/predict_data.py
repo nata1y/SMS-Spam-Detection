@@ -2,7 +2,7 @@ from matplotlib.pyplot import axis
 import pandas as pd
 import numpy as np
 
-import get_predictions
+from regression_model.get_predictions import _load_data as _load_prediction_data
 from train_model.text_preprocessing import _load_data
 
 from sklearn.linear_model import LogisticRegression
@@ -31,7 +31,7 @@ def train_classifier(classifier, X_train, y_train):
     classifier.fit(X_train, y_train)
 
 def main():
-    raw_data = get_predictions._load_data()
+    raw_data = _load_prediction_data()
     df = pd.DataFrame(_get_predictions(), columns=['message', 'result'])
     preprocessed_data = load('regression_output/preprocessed_data.joblib')
 
