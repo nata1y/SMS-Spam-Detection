@@ -14,6 +14,7 @@ nltk.download('stopwords')
 ensure_path_exists('regression_output')
 
 from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, BaggingClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.pipeline import make_union, make_pipeline
@@ -122,7 +123,7 @@ def main():
                                              raw_data['label'],
                                              raw_data['message'])
 
-    svc = SVC()
+    svc = AdaBoostClassifier()
     train_classifier(svc, X_train, y_train)
     pred = predict_labels(svc, X_test)
     pred_scores = [accuracy_score(y_test, pred)]
@@ -136,7 +137,7 @@ def main():
                                              df['result'],
                                              raw_data['message'])
 
-    svc = SVC()
+    svc = AdaBoostClassifier()
     train_classifier(svc, X_train, y_train)
     pred = predict_labels(svc, X_test)
     pred_scores = [accuracy_score(y_test, pred)]
