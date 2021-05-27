@@ -31,7 +31,6 @@ except Exception as e:
 def load_best_clf():
     global classifier_name
     file_to_load, latest_date = 'model.joblib', datetime.strptime('01-01-1970', "%m-%d-%Y")
-    print(os.listdir('output'))
     for filename in os.listdir('output'):
         if filename.endswith(".joblib"):
             try:
@@ -40,7 +39,7 @@ def load_best_clf():
                     latest_date = datetime.strptime(filename.split('_')[1].split('.')[0], "%m-%d-%Y")
                     classifier_name = filename.split('_')[0]
             except Exception as e:
-                print(e)
+                continue
 
     return joblib.load('output/' + file_to_load)
 
@@ -83,7 +82,7 @@ def predict():
                 }, ignore_index=True)
     stats.to_csv('output/stats/stats_from_wild.csv')
 
-    if stats.shape[0] % 1000 == 0 and stats:
+    if stats.shape[0] % 1001 == 0:
         compare_nlp_models(stats["sms"].tolist()[-1000:])
         compare_loss_dist(stats["sms"].tolist()[-1000:], model)
 
