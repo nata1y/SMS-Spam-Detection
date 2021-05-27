@@ -47,6 +47,19 @@ NOTE: add `host="0.0.0.0"` parameter to `app.run` call in `deploy_model/serve_mo
 $ python deploy_model/serve_model.py
 ```
 
+e) Run the regression model
+
+Retrieves and splits the dataset from the first 1000 labels on which the model is trained. 
+Get the predictions via HTTP requests from the model like in an actual deployment setup.
+Run LogisticRegression on the predicted set, actual set and model set for comparison.
+
+```
+$ python regression_model/get_data.py
+$ python regression_model/read_data.py
+$ python regression_model/get_predictions.py
+$ python regression_model/predict_data.py
+```
+
 You can test the API using the following:
 
 ```
