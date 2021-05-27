@@ -2,7 +2,8 @@ from matplotlib.pyplot import axis
 import pandas as pd
 import numpy as np
 
-from get_predictions import _load_data
+import get_predictions
+from train_model.text_preprocessing import _load_data
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
@@ -30,34 +31,22 @@ def train_classifier(classifier, X_train, y_train):
     classifier.fit(X_train, y_train)
 
 def main():
-    raw_data = _load_data()
-    temp = _get_predictions()
-    print(temp)
+    raw_data = get_predictions._load_data()
     df = pd.DataFrame(_get_predictions(), columns=['message', 'result'])
-    print(df)
     preprocessed_data = load('regression_output/preprocessed_data.joblib')
-
-    labels = []
-    for label in raw_data['label']:
-        if label == 'ham':
-            labels = np.append(labels, np.array([0]))
-        elif label == 'spam':
-            labels = np.append(labels, np.array([1]))
-        else:
-            labels = np.append(labels, np.array([0.5]))
 
     (X_train, X_test,
      y_train, y_test,
      _, test_messages) = my_train_test_split(preprocessed_data,
                                              raw_data['label'],
                                              raw_data['message'])
-    print(y_test)
 
     classifier = LogisticRegression()
     train_classifier(classifier, X_train, y_train)
     pred = predict_labels(classifier, X_test)
     pred_scores = [accuracy_score(y_test, pred)]
 
+    print('####### Actual Score ########')
     print(classification_report(y_test, pred))
     print(pred_scores)
 
@@ -72,6 +61,25 @@ def main():
     pred = predict_labels(classifier, X_test)
     pred_scores = [accuracy_score(y_test, pred)]
 
+    print('####### Prediction Score ########')
+    print(classification_report(y_test, pred))
+    print(pred_scores)
+
+    raw_data = _load_data()
+    preprocessed_data = load('output/preprocessed_data.joblib')
+
+    (X_train, X_test,
+     y_train, y_test,
+     _, test_messages) = my_train_test_split(preprocessed_data,
+                                             raw_data['label'],
+                                             raw_data['message'])
+
+    classifier = LogisticRegression()
+    train_classifier(classifier, X_train, y_train)
+    pred = predict_labels(classifier, X_test)
+    pred_scores = [accuracy_score(y_test, pred)]
+
+    print('####### Model Score ########')
     print(classification_report(y_test, pred))
     print(pred_scores)
 
