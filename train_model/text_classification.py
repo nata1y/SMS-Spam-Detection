@@ -3,10 +3,12 @@ Train the model using different algorithms.
 Creates 3 files in output: `accuracy_scores.png`,
 `model.joblib`, and `misclassified_msgs.txt`.
 """
+import json
 from datetime import datetime
 
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn import preprocessing
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import MultinomialNB
@@ -19,6 +21,7 @@ import matplotlib.pyplot as plt
 
 from deploy_model.util import ensure_path_exists
 from text_preprocessing import _load_data
+from train_model.nlp_sms_model import train_nlp_model, doc_distance
 
 pd.set_option('display.max_colwidth', None)
 ensure_path_exists('output')
@@ -47,7 +50,9 @@ def predict_labels(classifier, X_test):
 def main():
 
     raw_data = _load_data()
+    train_nlp_model(raw_data)
     preprocessed_data = load('output/preprocessed_data.joblib')
+    le = load('output/label_encoder.joblib')
 
     (X_train, X_test,
      y_train, y_test,
@@ -105,6 +110,13 @@ def main():
     # dump(classifiers['Decision Tree'], 'output/model.joblib')
 
     best_clf = accuracy['Accuracy Rate'].idxmax()
+    losses = {'losses':
+                  list(cross_val_score(classifiers[best_clf], preprocessed_data, le.transform(raw_data['label']),
+                                       cv=100, scoring='neg_brier_score'))
+              }
+    with open('output/losses.json', 'w') as f:
+        json.dump(losses, f)
+
     save_classifier(classifiers[best_clf], best_clf.lower().replace(' ', '-'))
 
 
