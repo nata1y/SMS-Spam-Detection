@@ -16,8 +16,9 @@ def main():
         sep='\t',
         names=['label', 'message']
     )
-    print(data.shape)
+    dt = 'train_data'
     model = load_best_clf()
+    losses = []
     for idx, row in data.iterrows():
         print(idx)
         processed_sms = prepare(row['message'])
@@ -30,13 +31,14 @@ def main():
             "sms": row['message']
         }, ignore_index=True)
 
-        stats.to_csv('output/stats/stats_from_wild.csv')
+        losses.append(0.0 if prediction == row['label'] else 1.0)
 
-        if stats.shape[0] % 1000 == 0 and stats:
-            print(row['message'])
-            print(prediction)
-            compare_nlp_models(stats["sms"].tolist()[-1000:])
-            compare_loss_dist(stats["sms"].tolist()[-1000:], copy.deepcopy(model))
+        stats.to_csv('output/stats/stats_from_wild.csv', index=False)
+
+        if (stats.shape[0]) % 100 == 0:
+            # compare_nlp_models(stats["sms"].tolist()[-100:])
+            compare_loss_dist(losses, dt)
+            losses = []
 
 
 if __name__ == '__main__':

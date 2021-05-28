@@ -13,8 +13,6 @@ def doc_distance(doc):
     gold_standard = load('output/nlp_drift/train_data_tfidf.joblib')
     nlp_model = load('output/nlp_drift/nlp_model.joblib')
     gold_standard_features = nlp_model.get_feature_names()
-    print(gold_standard_features)
-    quit()
     return kl_divergence(gold_standard.data, nlp_model.transform(doc).data)
 
 
