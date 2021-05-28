@@ -46,6 +46,7 @@ run:
 
 pages:
   script:
+    - apt update && apt install build-essential -y
     - pip install sphinx sphinx-rtd-theme
     - cd doc ; make html
     - mv build/html/ ../public/
