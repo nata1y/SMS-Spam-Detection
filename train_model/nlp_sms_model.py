@@ -4,6 +4,7 @@ from joblib import dump, load
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics import mutual_info_score as kl_divergence
 from sklearn.metrics.pairwise import linear_kernel
+from ot.lp import wasserstein_1d
 
 from deploy_model.util import ensure_path_exists
 import numpy as np
@@ -23,7 +24,7 @@ def doc_distance(doc):
     # cosine_similarities = linear_kernel(gold_standard.todense(), nlp_model.transform(doc).todense()).flatten()
     # similarity = sum(cosine_similarities)
 
-    res = kl_divergence(np.sum(gold_standard.toarray(), axis=0), np.sum(nlp_model.transform(doc).toarray(), axis=0))
+    res = wasserstein_1d(np.sum(gold_standard.toarray(), axis=0), np.sum(nlp_model.transform(doc).toarray(), axis=0))
     print(res)
 
     return res
