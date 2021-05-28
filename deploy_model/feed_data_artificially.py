@@ -35,9 +35,9 @@ def main():
 
         stats.to_csv('output/stats/stats_from_wild.csv', index=False)
 
-        if (stats.shape[0]) % 100 == 0:
-            # compare_nlp_models(stats["sms"].tolist()[-100:])
-            compare_loss_dist(losses, dt)
+        if (stats.shape[0]) % 1000 == 0:
+            compare_nlp_models(stats["sms"].tolist()[-1000:], dt)
+            # compare_loss_dist(losses, dt)
             losses = []
 
 

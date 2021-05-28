@@ -15,7 +15,7 @@ from sklearn.metrics import mutual_info_score as kl_divergence
 from train_model.text_preprocessing import prepare
 
 ensure_path_exists('output/stats')
-amount_subsamples = 10
+amount_subsamples = 100
 
 try:
     stats_nlp = pd.read_csv('output/stats/nlp_stats.csv')
@@ -56,7 +56,7 @@ def compare_loss_dist(losses_curr, dt):
     with open('output/losses.json', 'r') as j:
         train_losses = json.loads(j.read())['losses']
 
-    loss_dist = kl_divergence(losses, train_losses[:10])
+    loss_dist = kl_divergence(losses, train_losses)
     stats_loss = stats_loss.append({
                     "date": now.strftime("%m-%d-%Y"),
                     "loss_dist": loss_dist,
