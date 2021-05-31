@@ -82,7 +82,7 @@ def predict():
                 }, ignore_index=True)
     stats.to_csv('output/stats/stats_from_wild.csv')
 
-    if stats.shape[0] % 1001 == 0:
+    if stats.shape[0] % 1000 == 0:
         compare_nlp_models(stats["sms"].tolist()[-1000:])
         compare_loss_dist(stats["sms"].tolist()[-1000:], model)
 

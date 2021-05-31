@@ -107,7 +107,7 @@ def main():
     plt.savefig("output/accuracy_scores.png")
 
     # Store "best" classifier
-    # dump(classifiers['Decision Tree'], 'output/model.joblib')
+    dump(classifiers['Decision Tree'], 'output/model.joblib')
 
     best_clf = accuracy['Accuracy Rate'].idxmax()
     losses = {'losses':
