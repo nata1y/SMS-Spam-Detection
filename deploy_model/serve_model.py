@@ -21,11 +21,11 @@ ensure_path_exists('output/stats')
 stats = None
 
 try:
-    stats = pd.read_csv('output/stats/stats_from_wild.csv')
+    stats = pd.read_csv('output/stats/stats_from_wild.csv', ignore_index=True)
 except Exception as e:
     print(e)
     stats = pd.DataFrame([], columns=["result", "prob_spam", "classifier", "sms"])
-    stats.to_csv('output/stats/stats_from_wild.csv')
+    stats.to_csv('output/stats/stats_from_wild.csv', index=False)
 
 
 def load_best_clf():
@@ -80,7 +80,7 @@ def predict():
                     "classifier": classifier_name,
                     "sms": sms
                 }, ignore_index=True)
-    stats.to_csv('output/stats/stats_from_wild.csv')
+    stats.to_csv('output/stats/stats_from_wild.csv', index=False)
 
     if stats.shape[0] % 1000 == 0:
         compare_nlp_models(stats["sms"].tolist()[-1000:])
