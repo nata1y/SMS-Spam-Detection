@@ -18,7 +18,6 @@ from sklearn.pipeline import make_union, make_pipeline
 from joblib import dump
 
 def _load_data():
-    
     messages = pd.read_csv(
         'regression_dataset/SMSSpamCollection_diff',
         sep='\t',
@@ -98,7 +97,7 @@ def main():
 
     for i, row in raw_data.iterrows():
         progressBar(i, len(raw_data))
-        res = requests.post("http://127.17.0.2:8080/predict", headers={'Content-Type': 'application/json'}, json={'sms': row['message']})
+        res = requests.post("http://127.0.0.1:8080/predict", headers={'Content-Type': 'application/json'}, json={'sms': row['message']})
         data = res.json()
         predictions = np.append(predictions, np.array([[row['label'], row['message'], data['result']]]), axis=0)
 

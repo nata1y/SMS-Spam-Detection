@@ -15,7 +15,7 @@ def import_messages():
     # messages = [line.rstrip() for line in open('dataset/SMSSpamCollection')]
     messages = [line.rstrip() for line in open('regression_dataset/SMSSpamCollection_diff')]
 
-    print('Total number of messages: ' + str(len(messages)))
+    # print('Total number of messages: ' + str(len(messages)))
     return messages
 
 def create_drift_flip():
@@ -93,6 +93,12 @@ def create_drift_concept():
 
     f.close()
 
+
+if __name__ == "__main__":
+    create_drift_flip()
+    create_random_drift()
+    create_drift_mutation()
+    create_drift_concept()
 
 # Data detection using https://www.explorium.ai/blog/understanding-and-handling-data-and-concept-drift/
 
