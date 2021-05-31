@@ -12,6 +12,7 @@ import os
 
 from deploy_model.proccess_stats import compare_nlp_models, compare_loss_dist
 from deploy_model.util import ensure_path_exists
+from deploy_model.drift_manager import DriftManager
 from train_model.text_preprocessing import prepare, _extract_message_len, _text_process
 
 app = Flask(__name__)
@@ -19,6 +20,8 @@ swagger = Swagger(app)
 classifier_name = None
 ensure_path_exists('output/stats')
 stats = None
+manager = DriftManager()
+
 
 try:
     stats = pd.read_csv('output/stats/stats_from_wild.csv')
@@ -85,6 +88,8 @@ def predict():
     if stats.shape[0] % 1001 == 0:
         compare_nlp_models(stats["sms"].tolist()[-1000:])
         compare_loss_dist(stats["sms"].tolist()[-1000:], model)
+
+    manager.add_call([sms, prediction])
 
     return jsonify({
         "result": prediction,
