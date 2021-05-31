@@ -4,6 +4,7 @@ Creates 3 files in output: `accuracy_scores.png`,
 `model.joblib`, and `misclassified_msgs.txt`.
 """
 import json
+import random
 from datetime import datetime
 
 import pandas as pd
@@ -45,6 +46,15 @@ def save_classifier(classifier, name):
 
 def predict_labels(classifier, X_test):
     return classifier.predict(X_test)
+
+
+def get_losses(losses, amount_subsamples):
+    res = []
+    for iter in range(amount_subsamples):
+        loss_samples = random.sample(losses, 80)
+        res.append(sum(loss_samples) / len(loss_samples))
+
+    return res
 
 
 def main():
@@ -107,13 +117,11 @@ def main():
     plt.savefig("output/accuracy_scores.png")
 
     # Store "best" classifier
-    # dump(classifiers['Decision Tree'], 'output/model.joblib')
+    dump(classifiers['Decision Tree'], 'output/model.joblib')
 
     best_clf = accuracy['Accuracy Rate'].idxmax()
-    losses = {'losses':
-                  list(cross_val_score(classifiers[best_clf], preprocessed_data, le.transform(raw_data['label']),
-                                       cv=100, scoring='neg_brier_score'))
-              }
+    losses = get_losses([0.0 if y_test.tolist()[i] == pred[best_clf][i] else 1.0 for i in range(len(y_test))], 100)
+    losses = {'losses': losses}
     with open('output/losses.json', 'w') as f:
         json.dump(losses, f)
 
