@@ -47,7 +47,7 @@ def create_random_drift():
         label = splitted[0]
         msg = splitted[1]
 
-        if random() > 0.5:
+        if random() > 0.85:
             if label == "spam":
                 label = "ham"
             elif label == "ham":

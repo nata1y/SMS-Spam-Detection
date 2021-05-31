@@ -4,6 +4,7 @@ nltk==3.6.1
 scipy==1.6.2
 matplotlib==3.4.1
 scikit-learn==0.24.1
+scikit-multiflow
 Flask==1.1.2
 flasgger
 
@@ -12,3 +13,4 @@ dvc[gdrive]
 mllint
 requests
 POT
+evidently
