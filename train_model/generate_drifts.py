@@ -11,79 +11,94 @@
 
 from random import *
 
-messages = [line.rstrip() for line in open('dataset/SMSSpamCollection')]
+def import_messages():
+    # messages = [line.rstrip() for line in open('dataset/SMSSpamCollection')]
+    messages = [line.rstrip() for line in open('regression_dataset/SMSSpamCollection_diff')]
 
-print('\nTotal number of messages: ' + str(len(messages)))
-print('\n')
+    # print('Total number of messages: ' + str(len(messages)))
+    return messages
 
-# Data drift by flipping
-f = open("dataset/drift_flip.txt", "w")
+def create_drift_flip():
+    # Data drift by flipping
+    f = open("dataset/drifts/drift_flip.txt", "w")
+    messages = import_messages()
 
-for msg in messages:
-    splitted = msg.split("\t")
-    label = splitted[0]
-    msg = splitted[1]
+    for msg in messages:
+        splitted = msg.split("\t")
+        label = splitted[0]
+        msg = splitted[1]
 
-    if label == "spam":
-    	label = "ham"
-    elif label == "ham":
-    	label = "spam"
+        if label == "spam":
+            label = "ham"
+        elif label == "ham":
+            label = "spam"
 
-    f.write(f'{label}\t{msg}\n')
+        f.write(f'{label}\t{msg}\n')
 
-f.close()
+    f.close()
 
-# Data drift by randomness
-f = open("dataset/drift_random.txt", "w")
+def create_random_drift():
+    # Data drift by randomness
+    f = open("dataset/drifts/drift_random.txt", "w")
+    messages = import_messages()
 
-for msg in messages:
-    splitted = msg.split("\t")
-    label = splitted[0]
-    msg = splitted[1]
+    for msg in messages:
+        splitted = msg.split("\t")
+        label = splitted[0]
+        msg = splitted[1]
 
-    if random() > 0.5:
-	    if label == "spam":
-	    	label = "ham"
-	    elif label == "ham":
-	    	label = "spam"
+        if random() > 0.5:
+            if label == "spam":
+                label = "ham"
+            elif label == "ham":
+                label = "spam"
 
-    f.write(f'{label}\t{msg}\n')
+        f.write(f'{label}\t{msg}\n')
 
-f.close()
+    f.close()
 
+def create_drift_mutation():
+    # Data drift by mutation of ham messages by inserting new words from the spam messages
+    f = open("dataset/drifts/drift_mutation.txt", "w")
+    messages = import_messages()
 
-# Data drift by mutation of ham messages by inserting new words from the spam messages
-f = open("dataset/drift_mutation.txt", "w")
-
-for msg in messages[:100]:
-    splitted = msg.split("\t")
-    label = splitted[0]
-    msg = splitted[1]
-
-
-
-
-    f.write(f'{label}\t{msg}\n')
-
-f.close()
-
-
-# Concept drift by reducing training size and splitting the dataset (see paper on 
-# Concept drift for emails, not entirely sure how it works)
-f = open("dataset/drift_concept.txt", "w")
-
-for msg in messages[:100]:
-    splitted = msg.split("\t")
-    label = splitted[0]
-    msg = splitted[1]
+    for msg in messages[:100]:
+        splitted = msg.split("\t")
+        label = splitted[0]
+        msg = splitted[1]
 
 
 
 
-    f.write(f'{label}\t{msg}\n')
+        f.write(f'{label}\t{msg}\n')
 
-f.close()
+    f.close()
 
+
+def create_drift_concept():
+    # Concept drift by reducing training size and splitting the dataset (see paper on 
+    # Concept drift for emails, not entirely sure how it works)
+    f = open("dataset/drifts/drift_concept.txt", "w")
+    messages = import_messages()
+
+    for msg in messages[:100]:
+        splitted = msg.split("\t")
+        label = splitted[0]
+        msg = splitted[1]
+
+
+
+
+        f.write(f'{label}\t{msg}\n')
+
+    f.close()
+
+
+if __name__ == "__main__":
+    create_drift_flip()
+    create_random_drift()
+    create_drift_mutation()
+    create_drift_concept()
 
 # Data detection using https://www.explorium.ai/blog/understanding-and-handling-data-and-concept-drift/
 
