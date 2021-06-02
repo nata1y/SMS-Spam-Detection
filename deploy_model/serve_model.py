@@ -83,8 +83,8 @@ def predict():
     stats.to_csv('output/stats/stats_from_wild.csv', index=False)
 
     if stats.shape[0] % 1000 == 0:
-        compare_nlp_models(stats["sms"].tolist()[-1000:])
-        compare_loss_dist(stats["sms"].tolist()[-1000:], model)
+        compare_nlp_models(stats["sms"].tolist()[-1000:], 'api')
+        # compare_loss_dist(stats["sms"].tolist()[-1000:], 'api')
 
     return jsonify({
         "result": prediction,
