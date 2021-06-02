@@ -3,7 +3,11 @@ import string
 import random
 from nltk.tokenize import word_tokenize
 
+from deploy_model.util import ensure_path_exists
+
 nltk.download('punkt')
+ensure_path_exists('dataset/drifts')
+
 
 def import_messages():
     messages = [line.rstrip() for line in open('dataset/SMSSpamCollection')]
