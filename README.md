@@ -26,7 +26,7 @@ b2) Alternatively, use Docker for dependencies and volumes.
 
 ```
 $ docker build --progress plain . -t docker-sms
-$ docker run -it --rm -v "$(pwd)":/root/project -p "8080:8080" docker-sms
+$ docker run -it --rm -v ${PWD}:/root/project -p "8080:8080" docker-sms
 ~# $ cd project
 ```
 
@@ -75,3 +75,8 @@ Alternatively, you can access the UI using your browser: http://127.0.0.1:8080/a
 [*Release Engineering for Machine Learning Applications* (REMLA)]: https://se.ewi.tudelft.nl/remla/ 
 [Prof. Luís Cruz]: https://luiscruz.github.io/
 [Prof. Sebastian Proksch]: https://proks.ch/
+
+Run Prometheus using docker:
+```
+docker run --rm -p 9090:9090 -v ${PWD}/prometheus_data/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+```
