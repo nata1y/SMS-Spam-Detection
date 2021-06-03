@@ -85,7 +85,7 @@ def predict():
                 }, ignore_index=True)
     stats.to_csv('output/stats/stats_from_wild.csv', index=False)
 
-    manager.add_call([prediction, sms], stats, [processed_sms])
+    manager.add_call([prediction, sms], stats)
 
     return jsonify({
         "result": prediction,

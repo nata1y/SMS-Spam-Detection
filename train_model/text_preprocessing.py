@@ -32,6 +32,16 @@ def _load_data():
     return messages
 
 
+def _label_encoder():
+    labels = np.array([])
+    for idx, row in _load_data().iterrows():
+        if row[0] == 'ham':
+            labels = np.append(labels, [0], axis=0)
+        elif row[0] == 'spam':
+            labels = np.append(labels, [1], axis=0)
+    return labels
+
+
 def _text_process(data):
     '''
     1. remove punc

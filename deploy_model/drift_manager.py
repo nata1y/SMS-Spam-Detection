@@ -27,13 +27,13 @@ class DriftManager:
       )
       
 
-  def add_call(self, prediction, stats, preprocessed):
+  def add_call(self, prediction, stats):
     self.calls = self.calls + 1
     self.stats = stats
-    if len(self.preprocessed) == 0:
-      self.preprocessed = np.array([preprocessed])
-    else:
-      self.preprocessed = np.append(self.preprocessed, [preprocessed], axis=0)
+    if prediction[0] == 'ham':
+      self.preprocessed = np.append(self.preprocessed, [0])
+    elif prediction[0] == 'spam':
+      self.preprocessed = np.append(self.preprocessed, [1])
     if len(self.data) == 0:
       self.data = np.array([prediction])
     else:
@@ -46,11 +46,11 @@ class DriftManager:
     print("Checking last 10 elements for data drift...")
     indices = np.array([-1, -2, -3, -4, -5, -6, -7, -8, -9, -10])
     last_10 = pd.DataFrame(np.take(self.data, indices, axis=0), columns=['label', 'message'])
-    _detect_drift(last_10)
+    _detect_drift(last_10, self.preprocessed)
 
     print("Checking complete incoming dataset for data drift...")
     full_set = pd.DataFrame(np.array(self.data), columns=['label', 'message'])
-    _detect_drift(full_set)
+    _detect_drift(full_set, self.preprocessed)
 
     print("Check for concept drift using NLP and loss distribution")
     # get_loss_and_nlp(self.incoming_real_labels, last_10, self.stats)
