@@ -7,7 +7,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 
-from deploy_model.util import ensure_path_exists
+from deploy_model.util import ensure_path_exists, progressBar
 
 nltk.download('stopwords')
 ensure_path_exists('regression_output')
@@ -24,14 +24,6 @@ def _load_data():
         names=['label', 'message']
     )
     return messages
-
-
-def progressBar(current, total, barLength = 20):
-    percent = float(current) * 100 / total
-    arrow   = '-' * int(percent/100 * barLength - 1) + '>'
-    spaces  = ' ' * (barLength - len(arrow))
-
-    print('Progress: [%s%s] %d %%' % (arrow, spaces, percent), end='\r')
 
 def _text_process(data):
     '''
