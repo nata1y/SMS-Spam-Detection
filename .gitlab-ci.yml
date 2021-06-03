@@ -30,6 +30,9 @@ before_script:
 test:
   script:
     - python train_model/get_data.py
+    - python train_model/text_preprocessing
+    - python train_model/text_classification
+    - python regression_model/get_data.py
     - python setup.py install
     - python setup.py test
     - pip install tox flake8
