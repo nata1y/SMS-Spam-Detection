@@ -1,45 +1,34 @@
 import copy
-
 import pandas as pd
-from joblib import load
 
 from deploy_model.proccess_stats import compare_nlp_models, compare_loss_dist
-from train_model.text_preprocessing import prepare, _text_process, _extract_message_len
+from deploy_model.util import progressBar
 
-from deploy_model.serve_model import load_best_clf, classifier_name, stats as general_stats
+def get_loss_and_nlp(data, predictions, stats, types=["loss", "nlp"]):
+    dt = 'train_data'
+    losses = []
+    stats_nlp, stats_loss = None, None
 
+    for idx, row in predictions.iterrows():
+        progressBar(idx, len(predictions))
+        losses.append(0.0 if data.loc[idx, 'label'] == row['label'] else 1.0)
+
+    if (stats.shape[0]) % 100 == 0:
+        if "nlp" in types:
+            stats_nlp = compare_nlp_models(stats["sms"].tolist()[-100:], dt)
+        if "loss" in types:
+            stats_loss = compare_loss_dist(losses, dt)
+        losses = []
+
+    return stats_nlp, stats_loss
 
 def main():
-    stats = general_stats
     data = pd.read_csv(
         'dataset/SMSSpamCollection',
         sep='\t',
         names=['label', 'message']
     )
-    dt = 'train_data'
-    model = load_best_clf()
-    losses = []
-    for idx, row in data.iterrows():
-        print(idx)
-        processed_sms = prepare(row['message'])
-        prediction = model.predict(processed_sms)[0]
-
-        stats = stats.append({
-            "result": prediction,
-            "prob_spam": model.predict_proba(processed_sms)[0],
-            "classifier": classifier_name,
-            "sms": row['message']
-        }, ignore_index=True)
-
-        losses.append(0.0 if prediction == row['label'] else 1.0)
-
-        stats.to_csv('output/stats/stats_from_wild.csv', index=False)
-
-        if (stats.shape[0]) % 1000 == 0:
-            compare_nlp_models(stats["sms"].tolist()[-1000:], dt)
-            # compare_loss_dist(losses, dt)
-            losses = []
-
+    get_loss_and_nlp(data)
 
 if __name__ == '__main__':
     main()

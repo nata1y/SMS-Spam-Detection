@@ -4,21 +4,24 @@ Flask API of the SMS Spam detection model model.
 import traceback
 from datetime import datetime
 
-import joblib
+from joblib import load
 from flask import Flask, jsonify, request
 from flasgger import Swagger
 import pandas as pd
 import os
 
-from deploy_model.proccess_stats import compare_nlp_models, compare_loss_dist
 from deploy_model.util import ensure_path_exists
 from train_model.text_preprocessing import prepare, _extract_message_len, _text_process
+
+from deploy_model.drift_manager import DriftManager
 
 app = Flask(__name__)
 swagger = Swagger(app)
 classifier_name = None
 ensure_path_exists('output/stats')
 stats = None
+manager = DriftManager()
+
 
 try:
     stats = pd.read_csv('output/stats/stats_from_wild.csv', ignore_index=True)
@@ -41,7 +44,7 @@ def load_best_clf():
             except Exception as e:
                 continue
 
-    return joblib.load('output/' + file_to_load)
+    return load('output/' + file_to_load)
 
 
 @app.route('/predict', methods=['POST'])
@@ -82,9 +85,7 @@ def predict():
                 }, ignore_index=True)
     stats.to_csv('output/stats/stats_from_wild.csv', index=False)
 
-    if stats.shape[0] % 1000 == 0:
-        compare_nlp_models(stats["sms"].tolist()[-1000:], 'api')
-        # compare_loss_dist(stats["sms"].tolist()[-1000:], 'api')
+    manager.add_call([prediction, sms], stats)
 
     return jsonify({
         "result": prediction,

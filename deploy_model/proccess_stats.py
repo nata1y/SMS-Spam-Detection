@@ -63,6 +63,7 @@ def compare_loss_dist(losses_curr, dt):
                     "drift_type": dt
                 }, ignore_index=True)
     stats_loss.to_csv('output/stats/loss_stats.csv', index=False)
+    return stats_loss
 
 
 def compare_nlp_models(doc, dt):
@@ -74,5 +75,5 @@ def compare_nlp_models(doc, dt):
                     "kl_divergence": distance,
                     "drift_type": dt
                 }, ignore_index=True)
-    print(stats_nlp)
     stats_nlp.to_csv('output/stats/nlp_stats.csv', index=False)
+    return stats_nlp

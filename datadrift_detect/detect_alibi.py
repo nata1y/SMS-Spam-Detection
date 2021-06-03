@@ -1,9 +1,10 @@
 import pandas as pd
+import numpy as np
 
 from alibi_detect.cd import KSDrift, ClassifierUncertaintyDrift, MMDDrift, ChiSquareDrift
 
 from regression_model.get_predictions import _load_data as _load_prediction_data
-from train_model.text_preprocessing import _load_data, _preprocess
+from train_model.text_preprocessing import _load_data, _preprocess, _label_encoder
 from train_model.generate_drifts import create_random_drift
 
 def _load_random_drift():
@@ -19,20 +20,37 @@ def _load_random_drift():
 def _get_drifts(values, p_val):
     ks_drift = KSDrift(values, p_val=p_val)
     # cu_drift = ClassifierUncertaintyDrift(values, p_val=p_val) # requires model
-    # mmd_drift = MMDDrift(values, p_val=p_val) # requires numerical values
     cs_drift = ChiSquareDrift(values, p_val=p_val)
 
     return ks_drift, cs_drift
 
-def main():
-    raw_real_data = _load_data()
-    raw_drift_data = _load_random_drift()
+def _get_num_drifts(num_values, p_val):
+    mmd_drift = MMDDrift(num_values, p_val=p_val) # requires numerical values
+    return mmd_drift
 
-    cds = _get_drifts(raw_real_data.values, 0.05)
+def _detect_drift(data, preprocessed=[]):
+    raw_real_data = _load_data()
+    p_val = 0.05
+    cds = _get_drifts(raw_real_data.values, p_val)
+    detections = np.array([])
 
     for cd in cds:
-        preds = cd.predict(raw_drift_data.values)
-        print(preds['meta']['name'] + ": " + str(preds['data']))
+        preds = cd.predict(data.values)
+        detections = np.append(detections, [preds])
+
+    if len(preprocessed) > 0:
+        real_preprocessed = _label_encoder()
+        real_preprocessed = np.reshape(real_preprocessed, (len(real_preprocessed), 1))
+        cd = _get_num_drifts(real_preprocessed, p_val)
+        preprocessed = np.reshape(preprocessed, (len(preprocessed), 1))
+        preds = cd.predict(preprocessed)
+        detections = np.append(detections, [preds])
+    return detections
+
+def main():
+    raw_drift_data = _load_random_drift()
+    _detect_drift(raw_drift_data)
+    
 
 if __name__ == "__main__":
     main()
