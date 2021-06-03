@@ -46,13 +46,17 @@ class DriftManager:
     print("Checking last 10 elements for data drift...")
     indices = np.array([-1, -2, -3, -4, -5, -6, -7, -8, -9, -10])
     last_10 = pd.DataFrame(np.take(self.data, indices, axis=0), columns=['label', 'message'])
-    _detect_drift(last_10, self.preprocessed)
+    for detection in _detect_drift(last_10, self.preprocessed):
+      print("DRIFT DETECTED" if detection['data']['is_drift'] == 1 else "")
+      print(detection['meta']['name'] + ": " + str(detection['data']))
 
     print("Checking complete incoming dataset for data drift...")
     full_set = pd.DataFrame(np.array(self.data), columns=['label', 'message'])
-    _detect_drift(full_set, self.preprocessed)
+    for detection in _detect_drift(full_set, self.preprocessed):
+      print("DRIFT DETECTED" if detection['data']['is_drift'] == 1 else "")
+      print(detection['meta']['name'] + ": " + str(detection['data']))
 
     print("Check for concept drift using NLP and loss distribution")
-    # get_loss_and_nlp(self.incoming_real_labels, last_10, self.stats)
-    print("Check for full dataset")
-    get_loss_and_nlp(self.incoming_real_labels, full_set, self.stats)
+    nlp_stats, loss_stats = get_loss_and_nlp(self.incoming_real_labels, full_set, self.stats)
+    print("NLP Results: " + str(nlp_stats.iloc[-1:]))
+    print("Loss Results: " + str(loss_stats.iloc[-1:]))

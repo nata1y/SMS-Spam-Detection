@@ -31,12 +31,12 @@ def _get_num_drifts(num_values, p_val):
 def _detect_drift(data, preprocessed=[]):
     raw_real_data = _load_data()
     p_val = 0.05
-    print(raw_real_data.values)
     cds = _get_drifts(raw_real_data.values, p_val)
+    detections = np.array([])
 
     for cd in cds:
         preds = cd.predict(data.values)
-        print(preds['meta']['name'] + ": " + str(preds['data']))
+        detections = np.append(detections, [preds])
 
     if len(preprocessed) > 0:
         real_preprocessed = _label_encoder()
@@ -44,7 +44,8 @@ def _detect_drift(data, preprocessed=[]):
         cd = _get_num_drifts(real_preprocessed, p_val)
         preprocessed = np.reshape(preprocessed, (len(preprocessed), 1))
         preds = cd.predict(preprocessed)
-        print(preds['meta']['name'] + ": " + str(preds['data']))
+        detections = np.append(detections, [preds])
+    return detections
 
 def main():
     raw_drift_data = _load_random_drift()
