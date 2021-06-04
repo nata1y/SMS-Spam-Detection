@@ -4,8 +4,9 @@ import pandas as pd
 from deploy_model.proccess_stats import compare_nlp_models, compare_loss_dist
 from deploy_model.util import progressBar
 
+
 def get_loss_and_nlp(data, predictions, stats, types=["loss", "nlp"]):
-    dt = 'train_data'
+    dt = 'api'
     losses = []
     stats_nlp, stats_loss = None, None
 
@@ -22,6 +23,7 @@ def get_loss_and_nlp(data, predictions, stats, types=["loss", "nlp"]):
 
     return stats_nlp, stats_loss
 
+
 def main():
     data = pd.read_csv(
         'dataset/SMSSpamCollection',
@@ -29,6 +31,7 @@ def main():
         names=['label', 'message']
     )
     get_loss_and_nlp(data)
+
 
 if __name__ == '__main__':
     main()

@@ -17,6 +17,7 @@ from sklearn.preprocessing import FunctionTransformer
 from sklearn.pipeline import make_union, make_pipeline
 from joblib import dump
 
+
 def _load_data():
     messages = pd.read_csv(
         'regression_dataset/SMSSpamCollection_diff',
@@ -24,6 +25,7 @@ def _load_data():
         names=['label', 'message']
     )
     return messages
+
 
 def _text_process(data):
     '''
@@ -74,6 +76,7 @@ def _preprocess(messages):
     dump(preprocessed_data, 'regression_output/preprocessed_data.joblib')
     return preprocessed_data
 
+
 def _save_predictions(predictions):
  predictions.to_csv(
      'regression_dataset/predictions',
@@ -83,9 +86,10 @@ def _save_predictions(predictions):
     header=False,
  )
 
+
 def main():
     raw_data = _load_data()
-    predictions = np.empty((0,3), str)
+    predictions = np.empty((0, 3), str)
 
     for i, row in raw_data.iterrows():
         progressBar(i, len(raw_data))
@@ -97,6 +101,7 @@ def main():
 
     _preprocess(df)
     _save_predictions(df)
+
 
 if __name__ == "__main__":
     main()
