@@ -1,5 +1,7 @@
 import joblib
+from scipy.stats import stats
 from sklearn.model_selection import train_test_split
+import numpy as np
 from sklearn.svm import SVR
 
 from regression_model.get_predictions import _load_data as _load_prediction_data
@@ -17,7 +19,7 @@ def train_regression_model():
     classifier, _ = load_best_clf()
     preprocessor = joblib.load('output/preprocessor.joblib')
     le = joblib.load('output/label_encoder.joblib')
-    messages = []
+    percentiles_stats = []
     scores = []
 
     for batch in range(10):
@@ -27,11 +29,12 @@ def train_regression_model():
         y_sample = X_sample['label']
         X_sample = preprocessor.transform(X_sample['message'])
 
+        classifier_stats = [x[0] for x in classifier.predict_proba(X_sample)]
         classifier_res = classifier.predict(X_sample)
-        messages += [X_sample]
+        percentiles_stats += [[np.percentile(classifier_stats, i) for i in range(0, 101, 5)]]
         scores += [accuracy_score(classifier_res, y_sample)]
 
-        drift_detector.fit(X_sample, [scores[-1]])
+    drift_detector.fit(percentiles_stats, scores)
     joblib.dump(drift_detector, 'regression_output/regression_model.joblib')
 
 
