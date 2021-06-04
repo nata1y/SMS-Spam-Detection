@@ -10,8 +10,8 @@ services:
   prometheus:
     image: prom/prometheus
     volumes:
-     - /prometheus_data/prometheus.yml:/prometheus/prometheus.yml
+     - ./prometheus_data:/prometheus_data
     command:
-      - '--config.file=/prometheus/prometheus/prometheus.yml'
+      - '--config.file=/prometheus_data/prometheus.yml'
     ports:
       - 9090:9090
