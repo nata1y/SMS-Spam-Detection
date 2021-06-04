@@ -25,7 +25,7 @@ manager = DriftManager()
 
 
 try:
-    stats = pd.read_csv('output/stats/stats_from_wild.csv', ignore_index=True)
+    stats = pd.read_csv('output/stats/stats_from_wild.csv')
 except Exception as e:
     print(e)
     stats = pd.DataFrame([], columns=["result", "prob_spam", "classifier", "sms"])
@@ -59,7 +59,7 @@ def predict():
     input_data = request.get_json()
     sms = input_data.get('sms')
     processed_sms = prepare(sms)
-    model = load_best_clf()
+    model, _ = load_best_clf()
     prediction = model.predict(processed_sms)[0]
 
     stats = stats.append({
@@ -70,7 +70,7 @@ def predict():
                 }, ignore_index=True)
     stats.to_csv('output/stats/stats_from_wild.csv', index=False)
 
-    manager.add_call([prediction, sms], stats)
+    manager.add_call([prediction, sms])
 
     return jsonify({
         "result": prediction,
