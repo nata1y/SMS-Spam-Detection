@@ -35,6 +35,15 @@ except Exception as e:
     stats_loss.to_csv('output/stats/loss_stats.csv', index=False)
 
 
+try:
+    stats_regression = pd.read_csv('output/stats/regression_stats.csv')
+except Exception as e:
+    print(e)
+    # TODO: add pass to dumped data
+    stats_regression = pd.DataFrame([], columns=["date", "predicted_performance", "drift_type"])
+    stats_regression.to_csv('output/stats/regression_stats.csv', index=False)
+
+
 def get_losses(losses, amount_subsamples):
     res = []
     for iter in range(amount_subsamples):
@@ -77,3 +86,17 @@ def compare_nlp_models(doc, dt):
                 }, ignore_index=True)
     stats_nlp.to_csv('output/stats/nlp_stats.csv', index=False)
     return stats_nlp
+
+
+def get_regression_predictions(percentiles, dt):
+    global stats_regression
+    now = datetime.now()
+    reg_model = load('regression_output/regression_model.joblib')
+    res = reg_model.predict(percentiles)
+    stats_regression = stats_regression.append({
+                    "date": now.strftime("%m-%d-%Y"),
+                    "predicted_performance": res,
+                    "drift_type": dt
+                }, ignore_index=True)
+    stats_nlp.to_csv('output/stats/regression_stats.csv', index=False)
+    return stats_regression

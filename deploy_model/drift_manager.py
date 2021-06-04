@@ -3,7 +3,9 @@ import numpy as np
 import json
 
 from datadrift_detect.detect_alibi import _detect_drift
-from deploy_model.feed_data_artificially import get_loss_and_nlp
+from deploy_model.feed_data_artificially import get_all_stats
+from deploy_model.proccess_stats import get_regression_predictions
+from deploy_model.util import load_best_clf
 
 
 class DriftManager:
@@ -21,6 +23,7 @@ class DriftManager:
         self.data = np.array([])
         self.stats = np.array([])
         self.preprocessed = np.array([])
+        self.clf, _ = load_best_clf()
         self.incoming_real_labels = pd.read_csv(
             'regression_dataset/SMSSpamCollection_diff',
             sep='\t',
@@ -33,7 +36,7 @@ class DriftManager:
             self.thresholds = {
                 "nlp": 0.3,
                 "loss": 10.0,
-                "regression": 1.0
+                "regression": 0.8
             }
             with open('output/stats/thresholds.json', 'w') as outfile:
                 json.dump(self.thresholds, outfile)
@@ -68,7 +71,7 @@ class DriftManager:
             print(detection['meta']['name'] + ": " + str(detection['data']))
 
         print("Check for concept drift using NLP and loss distribution")
-        nlp_stats, loss_stats = get_loss_and_nlp(self.incoming_real_labels, full_set, self.stats)
+        nlp_stats, loss_stats, regression_stats = get_all_stats(self.incoming_real_labels, full_set, self.stats, self.clf)
         print("NLP Results:\n " + str(nlp_stats.iloc[-1:]))
 
         if nlp_stats['kl_divergence'].tolist()[-1] > self.thresholds['nlp']:
@@ -78,3 +81,11 @@ class DriftManager:
 
         if loss_stats['loss_dist'].tolist()[-1] > self.thresholds['loss']:
             print("====================== LOSS DRIFT DETECTED ============================")
+
+        print("Regression Results:\n" + str(regression_stats.iloc[-1:]))
+
+        if loss_stats['predicted_performance'].tolist()[-1] < self.thresholds['regression']:
+            print("====================== REG DRIFT DETECTED ============================")
+
+if __name__ == '__main__':
+    DriftManager().calculate_drifts()

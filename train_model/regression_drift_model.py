@@ -22,7 +22,7 @@ def train_regression_model():
     percentiles_stats = []
     scores = []
 
-    for batch in range(10):
+    for batch in range(100):
         print(f"Train logistic drift detector epoch {batch}")
 
         X_sample, _ = train_test_split(raw_data, test_size=0.3, random_state=batch)
