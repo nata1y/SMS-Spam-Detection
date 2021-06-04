@@ -76,7 +76,11 @@ Alternatively, you can access the UI using your browser: http://127.0.0.1:8080/a
 [Prof. Luís Cruz]: https://luiscruz.github.io/
 [Prof. Sebastian Proksch]: https://proks.ch/
 
-Run Prometheus using docker:
+Run Prometheus on port 9090 and Grafana on port 3000 using docker:
 ```
-docker run --rm -p 9090:9090 -v ${PWD}/prometheus_data/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+docker-compose up -d
+```
+Close Prometheus and Grafana:
+```
+docker-compose down
 ```

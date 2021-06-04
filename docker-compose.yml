@@ -6,6 +6,7 @@ version: "3.1"
 services:
   prometheus:
     image: prom/prometheus
+    container_name: prometheus-sms
     volumes:
      - ./prometheus-config:/prometheus-config
      - prometheus_data:/data
@@ -14,6 +15,17 @@ services:
       - '--storage.tsdb.path=/data'
     ports:
       - 9090:9090
+    expose:
+      - "9090"
+  grafana:
+    image: grafana/grafana
+    container_name: grafana-sms
+    volumes:
+      - ./grafana-config:/grafana-config
+    command:
+      - '--config=/grafana-config/custom.ini'
+    ports:
+      - 3000:3000
 
 volumes:
   prometheus_data: {}
