@@ -38,7 +38,7 @@ def main():
                             json={'sms': row['message']})
         try:
             data = json.loads(res.content.decode('utf-8'))
-            # print(f"RESPONSE: {data}")
+            print(f"RESPONSE: {data}")
         except:
             print(res.content)
 
