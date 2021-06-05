@@ -4,6 +4,14 @@
 version: "3.1"
 
 services:
+  server:
+    build: .
+    container_name: server-sms
+    volumes:
+      - ./deploy_model:/deploy_model
+      - ./output:/output
+    ports:
+      - 8080:8080
   prometheus:
     image: prom/prometheus
     container_name: prometheus-sms
@@ -29,3 +37,4 @@ services:
 
 volumes:
   prometheus_data: {}
+  server_data: {}

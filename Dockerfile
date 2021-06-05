@@ -18,6 +18,15 @@ RUN python -m pip install --upgrade pip &&\
     pip install -r requirements.txt &&\
     pip install alibi-detect
 
+COPY . .
+
+RUN python train_model/get_data.py &&\
+    python train_model/read_data.py &&\
+    python train_model/text_preprocessing.py &&\
+    python train_model/text_classification.py
+
+COPY . .
+
 EXPOSE 8080
 
-CMD "bash"
+CMD ["python", "deploy_model/serve_model.py"]
