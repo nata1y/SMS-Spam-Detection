@@ -17,23 +17,6 @@ from train_model.text_preprocessing import prepare
 ensure_path_exists('output/stats')
 amount_subsamples = 100
 
-try:
-    stats_nlp = pd.read_csv('output/stats/nlp_stats.csv')
-except Exception as e:
-    print(e)
-    # TODO: add pass to dumped data
-    stats_nlp = pd.DataFrame([], columns=["date", "kl_divergence", "drift_type"])
-    stats_nlp.to_csv('output/stats/nlp_stats.csv', index=False)
-
-
-try:
-    stats_loss = pd.read_csv('output/stats/loss_stats.csv')
-except Exception as e:
-    print(e)
-    # TODO: add pass to dumped data
-    stats_loss = pd.DataFrame([], columns=["date", "loss_dist", "drift_type"])
-    stats_loss.to_csv('output/stats/loss_stats.csv', index=False)
-
 
 def get_losses(losses, amount_subsamples):
     res = []
@@ -45,7 +28,12 @@ def get_losses(losses, amount_subsamples):
 
 
 def compare_loss_dist(losses_curr, dt):
-    global stats_loss
+    try:
+        stats_loss = pd.read_csv('output/stats/loss_stats.csv')
+    except Exception as e:
+        stats_loss = pd.DataFrame([], columns=["date", "loss_dist", "drift_type"])
+        stats_loss.to_csv('output/stats/loss_stats.csv', index=False)
+
     now = datetime.now()
     le = load('output/label_encoder.joblib')
 
@@ -67,7 +55,12 @@ def compare_loss_dist(losses_curr, dt):
 
 
 def compare_nlp_models(doc, dt):
-    global stats_nlp
+    try:
+        stats_nlp = pd.read_csv('output/stats/nlp_stats.csv')
+    except Exception as e:
+        stats_nlp = pd.DataFrame([], columns=["date", "kl_divergence", "drift_type"])
+        stats_nlp.to_csv('output/stats/nlp_stats.csv', index=False)
+
     now = datetime.now()
     distance = doc_distance(doc)
     stats_nlp = stats_nlp.append({
@@ -77,3 +70,22 @@ def compare_nlp_models(doc, dt):
                 }, ignore_index=True)
     stats_nlp.to_csv('output/stats/nlp_stats.csv', index=False)
     return stats_nlp
+
+
+def get_regression_predictions(percentiles, dt):
+    try:
+        stats_regression = pd.read_csv('output/stats/regression_stats.csv')
+    except Exception as e:
+        stats_regression = pd.DataFrame([], columns=["date", "predicted_performance", "drift_type"])
+        stats_regression.to_csv('output/stats/regression_stats.csv', index=False)
+
+    now = datetime.now()
+    reg_model = load('regression_output/regression_model.joblib')
+    res = reg_model.predict(percentiles)
+    stats_regression = stats_regression.append({
+                    "date": now.strftime("%m-%d-%Y"),
+                    "predicted_performance": res[0],
+                    "drift_type": dt
+                }, ignore_index=True)
+    stats_regression.to_csv('output/stats/regression_stats.csv', index=False)
+    return stats_regression
