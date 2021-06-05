@@ -7,9 +7,7 @@ __pycache__/
 *.html
 venv
 output
-regression_output
 
 .bash_history
 .cache/
 dataset/
-regression_dataset

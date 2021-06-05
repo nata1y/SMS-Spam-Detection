@@ -24,7 +24,7 @@ class DriftManager:
         self.preprocessed = np.array([])
         self.clf, _ = load_best_clf()
         self.incoming_real_labels = pd.read_csv(
-            'regression_dataset/SMSSpamCollection_diff',
+            'dataset/regression/SMSSpamCollection_diff',
             sep='\t',
             names=['label', 'message']
         )

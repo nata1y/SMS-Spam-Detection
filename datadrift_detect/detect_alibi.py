@@ -3,7 +3,7 @@ import numpy as np
 
 from alibi_detect.cd import KSDrift, ClassifierUncertaintyDrift, MMDDrift, ChiSquareDrift
 
-from regression_model.get_predictions import _load_data as _load_prediction_data
+from production_endpoint.get_predictions import _load_data as _load_prediction_data
 from train_model.text_preprocessing import _load_data, _preprocess, _label_encoder
 from train_model.generate_drifts import create_random_drift
 

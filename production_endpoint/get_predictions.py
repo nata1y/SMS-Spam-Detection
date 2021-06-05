@@ -12,7 +12,7 @@ from nltk.stem import SnowballStemmer
 from deploy_model.util import ensure_path_exists, progressBar
 
 nltk.download('stopwords')
-ensure_path_exists('regression_output')
+ensure_path_exists('output/regression')
 
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.preprocessing import FunctionTransformer
@@ -22,7 +22,7 @@ from joblib import dump
 
 def _load_data():
     messages = pd.read_csv(
-        'regression_dataset/SMSSpamCollection_diff',
+        'dataset/regression/SMSSpamCollection_diff',
         sep='\t',
         names=['label', 'message']
     )

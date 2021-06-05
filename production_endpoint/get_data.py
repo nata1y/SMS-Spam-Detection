@@ -11,7 +11,7 @@ URL = 'https://surfdrive.surf.nl/files/index.php/s/OZRd9BcxhGkxTuy/download' # V
 # URL = 'https://surfdrive.surf.nl/files/index.php/s/H4e35DvjaX18pTI/download' # V3
 # URL = 'https://surfdrive.surf.nl/files/index.php/s/HU5mY29RzxRlHCU/download' # V4
 DIFF_DIR = "dataset"
-EXTRACT_DIR = "regression_dataset"
+EXTRACT_DIR = "dataset/regression"
 
 zip_path, _ = urllib.request.urlretrieve(URL)
 with zipfile.ZipFile(zip_path, "r") as f:

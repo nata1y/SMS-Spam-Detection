@@ -9,7 +9,7 @@
 #              file. The purpose of this script is to simply give an initial idea of how the sms data is organized in 
 #              then dataset.
 
-messages = [line.rstrip() for line in open('regression_dataset/SMSSpamCollection_diff')]
+messages = [line.rstrip() for line in open('dataset/regression/SMSSpamCollection_diff')]
 
 print('\nTotal number of messages:' + str(len(messages)))
 print('\n')

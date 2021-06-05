@@ -13,7 +13,7 @@ from deploy_model.util import load_best_clf
 import pandas as pd
 
 
-datasets = ['regression_dataset/SMSSpamCollection_diff',
+datasets = ['dataset/regression/SMSSpamCollection_diff',
             'dataset/drifts/drift_random_0.5.txt',
             'dataset/drifts/drift_mutation.txt']
 
@@ -52,7 +52,7 @@ def train_regression_model():
             scores += [accuracy_score(classifier_res, y_sample)]
 
     drift_detector.fit(percentiles_stats, scores)
-    joblib.dump(drift_detector, 'regression_output/regression_model.joblib')
+    joblib.dump(drift_detector, 'output/regression/regression_model.joblib')
 
 
 if __name__ == "__main__":
