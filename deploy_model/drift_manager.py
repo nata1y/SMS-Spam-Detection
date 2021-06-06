@@ -4,7 +4,6 @@ import json
 
 from datadrift_detect.detect_alibi import _detect_drift
 from deploy_model.feed_data_artificially import get_all_stats
-from deploy_model.proccess_stats import get_regression_predictions
 from deploy_model.util import load_best_clf
 
 

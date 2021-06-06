@@ -2,25 +2,23 @@
 Preprocess the data to be trained by the learning algorithm.
 Creates files `preprocessor.joblib` and `preprocessed_data.joblib`
 """
-
+import nltk
+import string
 import pandas as pd
 import numpy as np
 
-import string
-import nltk
+from joblib import dump, load
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 from sklearn import preprocessing
+from sklearn.preprocessing import FunctionTransformer
+from sklearn.pipeline import make_union, make_pipeline
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 
 from deploy_model.util import ensure_path_exists
 
 nltk.download('stopwords')
 ensure_path_exists('output')
-
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from sklearn.preprocessing import FunctionTransformer
-from sklearn.pipeline import make_union, make_pipeline
-from joblib import dump, load
 
 
 def _load_data():

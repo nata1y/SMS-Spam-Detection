@@ -1,20 +1,15 @@
 """
 Flask API of the SMS Spam detection model model.
 """
-import traceback
-from datetime import datetime
+import pandas as pd
 
-from joblib import load
 from flask import Flask, jsonify, request
 from flasgger import Swagger
-import pandas as pd
-import os
-
-from deploy_model.util import ensure_path_exists
-from train_model.text_preprocessing import prepare, _extract_message_len, _text_process
 
 from deploy_model.drift_manager import DriftManager
 from deploy_model.util import load_best_clf
+from deploy_model.util import ensure_path_exists
+from train_model.text_preprocessing import prepare, _extract_message_len, _text_process
 
 app = Flask(__name__)
 swagger = Swagger(app)
