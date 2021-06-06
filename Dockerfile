@@ -18,14 +18,19 @@ RUN python -m pip install --upgrade pip &&\
     pip install -r requirements.txt &&\
     pip install alibi-detect
 
-COPY . .
+COPY deploy_model ./deploy_model
+COPY train_model ./train_model
+COPY datadrift_detect ./datadrift_detect
+COPY production_endpoint/ ./production_endpoint
+
+COPY dataset/ ./dataset
+COPY output/ ./output
 
 RUN python train_model/get_data.py &&\
-    python train_model/read_data.py &&\
     python train_model/text_preprocessing.py &&\
-    python train_model/text_classification.py
-
-COPY . .
+    python train_model/text_classification.py &&\
+    python train_model/generate_drifts.py && \
+    python train_model/regression_drift_model.py
 
 EXPOSE 8080
 

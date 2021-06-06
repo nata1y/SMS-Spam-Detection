@@ -13,7 +13,7 @@ from deploy_model.util import load_best_clf
 import pandas as pd
 
 
-datasets = ['dataset/regression/SMSSpamCollection_diff',
+datasets = ['dataset/SMSSpamCollection',
             'dataset/drifts/drift_random_0.5.txt',
             'dataset/drifts/drift_mutation.txt']
 
@@ -36,10 +36,10 @@ def train_regression_model():
     percentiles_stats = []
     scores = []
 
-    for data_set in datasets:
+    for index, data_set in enumerate(datasets):
         raw_data = _load_data(data_set)
-        for batch in range(100):
-            print(f"Train logistic drift detector epoch {batch}")
+        for batch in range(10):
+            print(f"Train logistic drift detector epoch {batch}, dataset {index}")
 
             X_sample, _ = train_test_split(raw_data, test_size=0.3, random_state=batch)
             y_sample = X_sample['label']
