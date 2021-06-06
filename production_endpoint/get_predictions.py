@@ -1,14 +1,12 @@
 import json
-
-import pandas as pd
-import numpy as np
 import requests
+import pandas as pd
 
 from deploy_model.util import progressBar
 
 def _load_data():
     messages = pd.read_csv(
-        'dataset/regression/SMSSpamCollection_diff',
+        'dataset/drifts/drift_spam_only.txt',
         sep='\t',
         names=['label', 'message']
     )

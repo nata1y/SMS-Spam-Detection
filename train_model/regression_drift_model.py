@@ -14,7 +14,9 @@ import pandas as pd
 
 
 datasets = ['dataset/SMSSpamCollection',
+            'dataset/drifts/drift_flip.txt',
             'dataset/drifts/drift_random_0.5.txt',
+            'dataset/drifts/drift_mutation.txt',
             'dataset/drifts/drift_mutation.txt']
 
 
@@ -38,7 +40,7 @@ def train_regression_model():
 
     for index, data_set in enumerate(datasets):
         raw_data = _load_data(data_set)
-        for batch in range(10):
+        for batch in range(25):
             print(f"Train logistic drift detector epoch {batch}, dataset {index}")
 
             X_sample, _ = train_test_split(raw_data, test_size=0.3, random_state=batch)
