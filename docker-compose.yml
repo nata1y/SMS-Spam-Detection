@@ -30,12 +30,11 @@ services:
     image: grafana/grafana
     container_name: grafana-sms
     volumes:
-      - ./grafana-config:/grafana-config
-    command:
-      - '--config=/grafana-config/custom.ini'
+      - grafana_data:/var/lib/Joe,
     ports:
       - 3000:3000
 
 volumes:
-  prometheus_data: {}
   server_data: {}
+  prometheus_data: {}
+  grafana_data: {}

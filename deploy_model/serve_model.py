@@ -1,6 +1,8 @@
 """
 Flask API of the SMS Spam detection model model.
 """
+import Monitoring.serve_metrics
+
 import pandas as pd
 
 from flask import Flask, jsonify, request
