@@ -1,0 +1,42 @@
+# Used example:
+# https://github.com/vegasbrianc/github-monitoring/blob/master/docker-compose.yml
+
+version: "3.1"
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.train
+    container_name: server-sms
+    ports:
+      - 8080:8080
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus-sms
+    volumes:
+     - ./prometheus-config:/prometheus-config
+     - prometheus_data:/data
+    user: root
+    command:
+      - '--config.file=/prometheus-config/prometheus.yml'
+      - '--storage.tsdb.path=/data'
+    ports:
+      - 9090:9090
+    expose:
+      - "9090"
+    depends_on: 
+      - server
+  grafana:
+    image: grafana/grafana
+    container_name: grafana-sms
+    volumes:
+      - grafana_data:/var/lib/Joe,
+    ports:
+      - 3000:3000
+    depends_on: 
+      - prometheus
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}

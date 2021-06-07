@@ -53,6 +53,14 @@ b3) Or, use docker-compose and automatically train and host.
 $ docker-compose up --build
 ```
 
+Or, to train all the models
+
+```
+$ docker-compose -f docker-compose.train.yml build
+$ ./get_training_data.sh
+$ docker-compose up
+```
+
 e) Production endpoint
 
 Retrieves and splits the dataset from the first 1000 labels on which the model is trained. 
@@ -63,7 +71,6 @@ OR: if you use docker-compose run `docker exec -it <container_id> bash` to run t
 
 ```
 $ python production_endpoint/get_data.py
-$ python production_endpoint/read_data.py
 $ python production_endpoint/get_predictions.py
 ```
 
@@ -80,12 +87,3 @@ Alternatively, you can access the UI using your browser: http://127.0.0.1:8080/a
 [*Release Engineering for Machine Learning Applications* (REMLA)]: https://se.ewi.tudelft.nl/remla/ 
 [Prof. Luís Cruz]: https://luiscruz.github.io/
 [Prof. Sebastian Proksch]: https://proks.ch/
-
-Run Prometheus on port 9090 and Grafana on port 3000 using docker:
-```
-docker-compose up -d
-```
-Close Prometheus and Grafana:
-```
-docker-compose down
-```
