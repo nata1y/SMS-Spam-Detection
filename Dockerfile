@@ -27,13 +27,6 @@ COPY monitoring/ ./monitoring
 COPY dataset/ ./dataset
 COPY output/ ./output
 
-RUN python train_model/get_data.py &&\
-    python train_model/text_preprocessing.py &&\
-    python train_model/text_classification.py &&\
-    python production_endpoint/get_data.py &&\
-    python train_model/generate_drifts.py && \
-    python train_model/regression_drift_model.py
-
 EXPOSE 8080
 
 CMD ["python", "deploy_model/serve_model.py"]
