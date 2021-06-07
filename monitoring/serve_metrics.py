@@ -3,7 +3,7 @@ from random import randint
 from flask import Flask
 from flasgger import Swagger
 
-from Monitoring.MetricsManager import MetricsManager
+from monitoring.MetricsManager import MetricsManager
 
 app = Flask(__name__)
 swagger = Swagger(app)

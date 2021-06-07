@@ -7,9 +7,6 @@ services:
   server:
     build: .
     container_name: server-sms
-    volumes:
-      - ./dataset:/dataset
-      - ./output:/output
     ports:
       - 8080:8080
   prometheus:

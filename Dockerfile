@@ -22,6 +22,7 @@ COPY deploy_model ./deploy_model
 COPY train_model ./train_model
 COPY datadrift_detect ./datadrift_detect
 COPY production_endpoint/ ./production_endpoint
+COPY monitoring/ ./monitoring
 
 COPY dataset/ ./dataset
 COPY output/ ./output
