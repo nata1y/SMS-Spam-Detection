@@ -56,11 +56,16 @@ $ docker-compose up --build
 Or, to train all the models
 
 ```
+$ sudo rm -r dataset/* && sudo rm -r output/*
 $ docker-compose -f docker-compose.train.yml build
-$ ./get_training_data.sh
+$ docker-compose -f docker-compose.train.yml up && ./get_training_data.sh
 or (for windows)
-$ ./get_training_data.exe 
-$ docker-compose up
+$ docker-compose -f docker-compose.train.yml up && ./get_training_data.exe 
+```
+
+Use the following command if you want to run the system without retraining everything
+```
+docker-compose up --build
 ```
 
 e) Production endpoint
