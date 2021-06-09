@@ -6,21 +6,20 @@ The process_ and scrape_ prefixes are reserved.
 Avoid type as a label name, it’s too generic and often meaningless. You should also try where possible to avoid names that are likely to clash with target labels, such as region, zone, cluster, availability_zone, az, datacenter, dc, owner, customer, stage, service, environment and env. If, however, that’s what the application calls some resource, it’s best not to cause confusion by renaming it.
 
 """
+
+
 class Metric:
-    namespace: str = None
     name: str = None
     value = None
     description: str = None
 
-    def __init__(self, namespace: str, name: str, description: str, value):
+    def __init__(self, name: str, description: str, value):
         """
         Constructor of a metric
-        :param namespace: Namespace of a metric (http, node, process for example)
         :param name: Name of the metric itself
         :param value: Initial value of the metric (empty string by default)
         :param description: Description of the metric (empty string by default)
         """
-        self.namespace = namespace
         self.name = name
         self.value = value
         self.description = description
@@ -31,15 +30,14 @@ class Metric:
         return False
 
     def __str__(self):
-        return "Metric[{}, {}, {}, {}]".format(self.getNamespace(),
-                                               self.getName(),
-                                               self.getDescription(),
-                                               self.getValue()
-                                               )
+        return "Metric[{}, {}, {}]".format(self.getName(),
+                                           self.getDescription(),
+                                           self.getValue()
+                                           )
 
     def getFullName(self) -> str:
         """
-        Get the full name of the metric: {namespace}_{name}
+        Get the full name of the metric: {name}
         https://prometheus.io/docs/practices/naming/
         Examples:
         - prometheus_notifications_total (specific to the Prometheus server)
@@ -47,13 +45,7 @@ class Metric:
         - http_request_duration_seconds (for all HTTP requests)
         :return: full name of the metric as displayed in prometheus
         """
-        return "{}_{}".format(self.namespace, self.name)
-
-    def getNamespace(self) -> str:
-        return self.namespace
-
-    def setNamespace(self, namespace: str):
-        self.namespace = namespace
+        return "{}".format(self.name)
 
     def getName(self) -> str:
         return self.name
@@ -98,52 +90,49 @@ class MetricsManager:
     def __init__(self):
         self.metrics = {}
 
-    def __getMetricKey(self, namespace: str, name: str) -> str:
+    def __getMetricKey(self, name: str) -> str:
         """
         Get the key of the corresponding metric.
         This is the same as the metric-naming for prometheus
         :return: unique key for the metric
         """
-        return "{}_{}".format(namespace, name)
+        return "{}".format(name)
 
-    def newMetric(self, namespace: str, name: str, description="", value=""):
+    def newMetric(self, name: str, description="", value=""):
         """
         Define a new metric for Prometheus
-        :param namespace: Name space of the metric
         :param name: Name of the metric
         :param description: Description of the metric
         :param value: Initial value of the metric
         :return: void
         """
-        key = self.__getMetricKey(namespace, name)
-        metric: Metric = Metric(namespace, name, description, value)
+        key = self.__getMetricKey(name)
+        metric: Metric = Metric(name, description, value)
         self.metrics.update({key: metric})
 
-    def updateMetric(self, namespace: str, name: str, value):
+    def updateMetric(self, name: str, value):
         """
         Update an existing metric.
         If the metric does not exist, it creates a new one.
-        :param namespace: Namespace of the metric
         :param name: Name of the metric
         :param value: New value of the metric
         :return: void
         """
-        key = self.__getMetricKey(namespace, name)
+        key = self.__getMetricKey(name)
         metric = self.metrics.get(key)
         if metric is None:
-            metric = Metric(namespace, name, "", value)
+            metric = Metric(name, "", value)
         else:
             metric.setValue(value)
         self.metrics.update({key: metric})
 
-    def getMetric(self, namespace: str, name: str) -> Metric:
+    def getMetric(self, name: str) -> Metric:
         """
-        Get a metric of choice. It returns None if no metric with corresponding namespace and name exists
-        :param namespace: Namespace of the metric
+        Get a metric of choice. It returns None if no metric with corresponding name exists
         :param name: Name of the metric
         :return: Corresponding Metric
         """
-        key = self.__getMetricKey(namespace, name)
+        key = self.__getMetricKey(name)
         return self.metrics.get(key)
 
     def getPrometheusMetricsString(self) -> str:

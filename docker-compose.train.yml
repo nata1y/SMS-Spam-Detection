@@ -11,6 +11,9 @@ services:
     container_name: server-sms
     ports:
       - 8080:8080
+    expose:
+      - "8080"
+
   prometheus:
     image: prom/prometheus
     container_name: prometheus-sms
@@ -25,18 +28,34 @@ services:
       - 9090:9090
     expose:
       - "9090"
-    depends_on: 
+    links:
+      - alertmanager:alertmanager
+    depends_on:
       - server
+
   grafana:
     image: grafana/grafana
     container_name: grafana-sms
+    depends_on:
+      - prometheus
     volumes:
-      - grafana_data:/var/lib/Joe,
+      - grafana_data:/var/lib/grafana
     ports:
       - 3000:3000
-    depends_on: 
-      - prometheus
+
+  alertmanager:
+    image: prom/alertmanager
+    container_name: alertmanager-sms
+    ports:
+      - 9093:9093
+    volumes:
+      - ./alertmanager-config/:/alertmanager-config
+      - alertmanager_data:/data
+    command:
+      - '--config.file=/alertmanager-config/config.yml'
+      - '--storage.path=/data'
 
 volumes:
   prometheus_data: {}
   grafana_data: {}
+  alertmanager_data: {}

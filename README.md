@@ -58,6 +58,8 @@ Or, to train all the models
 ```
 $ docker-compose -f docker-compose.train.yml build
 $ ./get_training_data.sh
+or (for windows)
+$ ./get_training_data.exe 
 $ docker-compose up
 ```
 

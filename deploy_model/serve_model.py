@@ -1,13 +1,12 @@
 """
 Flask API of the SMS Spam detection model model.
 """
-import monitoring.serve_metrics
-
 import pandas as pd
 
 from flask import Flask, jsonify, request
 from flasgger import Swagger
 
+from monitoring.MetricsManager import MetricsManager
 from deploy_model.drift_manager import DriftManager
 from deploy_model.util import load_best_clf
 from deploy_model.util import ensure_path_exists
@@ -18,8 +17,9 @@ swagger = Swagger(app)
 classifier_name = None
 ensure_path_exists('output/stats')
 stats = None
-manager = DriftManager()
 
+metricsManager: MetricsManager = MetricsManager()
+manager = DriftManager(metricsManager)
 
 try:
     stats = pd.read_csv('output/stats/stats_from_wild.csv')
@@ -107,6 +107,16 @@ def dumb_predict():
         "classifier": classifier_name,
         "sms": sms
     })
+
+
+# http://localhost:8080/metrics
+@app.route('/metrics', methods=['GET'])
+def metrics_dump():
+    """
+    Return the currently saved metrics to Prometheus
+    :return: Current metrics as understandable for Prometheus.
+    """
+    return metricsManager.getPrometheusMetricsString()
 
 
 if __name__ == '__main__':
