@@ -26,8 +26,6 @@ services:
       - 9090:9090
     expose:
       - "9090"
-    links:
-      - alertmanager:alertmanager
     depends_on:
       - server
 
@@ -38,22 +36,12 @@ services:
       - prometheus
     volumes:
       - grafana_data:/var/lib/grafana
+      - ./grafana-config:/grafana-config
+    command:
+      - '--config=/grafana-config/grafana.ini'
     ports:
       - 3000:3000
-
-  alertmanager:
-    image: prom/alertmanager
-    container_name: alertmanager-sms
-    ports:
-      - 9093:9093
-    volumes:
-      - ./alertmanager-config/:/alertmanager-config
-      - alertmanager_data:/data
-    command:
-      - '--config.file=/alertmanager-config/config.yml'
-      - '--storage.path=/data'
 
 volumes:
   prometheus_data: {}
   grafana_data: {}
-  alertmanager_data: {}
