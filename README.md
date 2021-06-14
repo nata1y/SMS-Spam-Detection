@@ -58,7 +58,7 @@ Or, to train all the models
 ```
 $ sudo rm -r dataset/* && sudo rm -r output/*
 $ docker-compose -f docker-compose.train.yml build
-$ docker-compose -f docker-compose.train.yml up && ./get_training_data.sh
+$ docker-compose -f docker-compose.train.yml up  -d && ./get_training_data.sh && docker-compose -f docker-compose.train.yml down
 or (for windows)
 $ docker-compose -f docker-compose.train.yml up && ./get_training_data.exe 
 ```

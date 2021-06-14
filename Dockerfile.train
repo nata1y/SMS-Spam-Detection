@@ -27,6 +27,10 @@ COPY monitoring/ ./monitoring
 COPY dataset/ ./dataset
 COPY output/ ./output
 
+RUN mkdir dataset/drift &&\
+    mkdir dataset/regression &&\
+    mkdir output/regression
+
 RUN python train_model/get_data.py &&\
     python train_model/text_preprocessing.py &&\
     python train_model/text_classification.py &&\
