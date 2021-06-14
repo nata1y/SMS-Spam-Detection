@@ -50,18 +50,11 @@ $ python deploy_model/serve_model.py
 b3) Or, use docker-compose and automatically train and host.
 
 ```
-$ docker-compose up --build
-```
-
-Or, to train all the models
-
-```
-$ sudo rm -r dataset/* && sudo rm -r output/*
 $ docker-compose -f docker-compose.train.yml build
-$ docker-compose -f docker-compose.train.yml up  -d && ./get_training_data.sh && docker-compose -f docker-compose.train.yml down
-or (for windows)
-$ docker-compose -f docker-compose.train.yml up && ./get_training_data.exe 
+$ docker-compose -f docker-compose.train.yml up -d && ./get_training_data.sh && docker-compose -f docker-compose.train.yml down
 ```
+
+Or, if you use windows run the commands inside the script instead of the script.
 
 Use the following command if you want to run the system without retraining everything
 ```
@@ -78,6 +71,7 @@ OR: if you use docker-compose run `docker exec -it <container_id> bash` to run t
 
 ```
 $ python production_endpoint/get_data.py
+$ python production_endpoint/generate_drifts.py
 $ python production_endpoint/get_predictions.py
 ```
 
