@@ -10,7 +10,9 @@ ensure_path_exists('dataset/drifts')
 
 
 def import_messages():
-    # messages = [line.rstrip() for line in open('dataset/SMSSpamCollection')]
+    # For training:
+    #messages = [line.rstrip() for line in open('dataset/SMSSpamCollection')]
+    # For production:
     messages = [line.rstrip() for line in open('dataset/regression/SMSSpamCollection_diff')]
 
     # print('Total number of messages: ' + str(len(messages)))
@@ -169,12 +171,12 @@ def create_drift_ham():
 
 
 if __name__ == "__main__":
-    create_drift_flip()
+    # create_drift_flip()
     create_random_drift(0.5)
-    create_drift_mutation()
-    create_drift_concept()
-    create_drift_spam()
-    create_drift_ham()
+    # create_drift_mutation()
+    # create_drift_concept()
+    # create_drift_spam()
+    # create_drift_ham()
 
 # Data detection using https://www.explorium.ai/blog/understanding-and-handling-data-and-concept-drift/
 

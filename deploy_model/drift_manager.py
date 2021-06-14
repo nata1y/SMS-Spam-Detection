@@ -7,6 +7,8 @@ from datadrift_detect.detect_alibi import _detect_drift
 from deploy_model.feed_data_artificially import get_all_stats
 from deploy_model.util import load_best_clf
 
+LABEL_DATA = "VANILLA_PROD"
+
 
 class DriftManager:
     window_size = 100
@@ -87,14 +89,34 @@ class DriftManager:
         # for detection in _detect_drift(last_10, self.preprocessed):
         #     print("DRIFT DETECTED" if detection['data']['is_drift'] == 1 else "")
         #     print(detection['meta']['name'] + ": " + str(detection['data']))
+        analysis_csv_row = f"{LABEL_DATA},"
 
         print("Checking complete incoming dataset for data drift...")
         full_set = pd.DataFrame(np.array(self.data[-self.window_size:]), columns=['label', 'message'])
         print(full_set.shape)
         for detection in _detect_drift(full_set, self.preprocessed[-self.window_size:]):
-            print("DRIFT DETECTED" if detection['data']['is_drift'] == 1 else "")
+            name = detection['meta']['name']
+            drift_bool = detection['data']['is_drift']
+
+            analysis_csv_row += f"{drift_bool},"
+
+            dist = detection['data']['distance']
+            if type(dist) is np.ndarray:
+                for x in dist:
+                    analysis_csv_row += f"{x}," 
+            else:
+                analysis_csv_row += f"{dist}," 
+ 
+
+            #print("DRIFT DETECTED" if detection['data']['is_drift'] == 1 else "")
             detection_data = str(detection['data'])
-            print(detection['meta']['name'] + ": " + detection_data)
+            #csv_analysis_header += 
+            #print("############################################")
+            #print(detection['meta']['name'] + " " + str(detection['data']['distance']) + " " + str(detection['data']['is_drift']))
+
+            #print("############################################")
+            #print(detection['meta']['name'] + ": " + detection_data)
+
 
         print("Check for concept drift using NLP and loss distribution")
         nlp_stats, loss_stats, regression_stats = get_all_stats(
@@ -106,24 +128,45 @@ class DriftManager:
         self.metricsManager.updateMetric("driftdetection_nlp_results", nlp_results)
         print("NLP Results:\n " + nlp_results)
 
-        if nlp_stats['kl_divergence'].tolist()[-1] > self.thresholds['nlp']:
+        value = nlp_stats['kl_divergence'].tolist()[-1]
+        drift_bool = nlp_stats['kl_divergence'].tolist()[-1] > self.thresholds['nlp']
+
+        if drift_bool:
             print("====================== NLP DRIFT DETECTED =============================")
+
+        analysis_csv_row += f"{value},{(1 if drift_bool else 0)},"
 
         # METRIC: driftdetection_loss_results
         loss_results = str(loss_stats.iloc[-1:])
         self.metricsManager.updateMetric("driftdetection_loss_results", loss_results)
         print("Loss Results:\n" + loss_results)
 
-        if loss_stats['loss_dist'].tolist()[-1] > self.thresholds['loss']:
+        value = loss_stats['loss_dist'].tolist()[-1]
+        drift_bool = loss_stats['loss_dist'].tolist()[-1] > self.thresholds['loss']
+
+        if drift_bool:
             print("====================== LOSS DRIFT DETECTED ============================")
+
+        analysis_csv_row += f"{value},{(1 if drift_bool else 0)},"
 
         # METRIC: driftdetection_regression_results
         regression_results = str(regression_stats.iloc[-1:])
         self.metricsManager.updateMetric("driftdetection_regression_results", regression_results)
         print("Regression Results:\n" + regression_results)
 
-        if regression_stats['predicted_performance'].tolist()[-1] < self.thresholds['regression']:
+        value = regression_stats['predicted_performance'].tolist()[-1]
+        drift_bool = regression_stats['predicted_performance'].tolist()[-1] < self.thresholds['regression']
+
+        if drift_bool:
             print("====================== REG DRIFT DETECTED ============================")
+
+        analysis_csv_row += f"{value},{(1 if drift_bool else 0)}"
+
+        print(analysis_csv_row)
+
+        f = open("output/combined_stats.csv", "a")
+        f.write(analysis_csv_row + "\n")
+        f.close()
 
 
 if __name__ == '__main__':

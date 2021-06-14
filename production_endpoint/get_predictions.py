@@ -3,10 +3,12 @@ import requests
 import pandas as pd
 
 from deploy_model.util import progressBar
+from train_model.generate_drifts import create_random_drift
 
 def _load_data():
+    #create_random_drift(0.5)
     messages = pd.read_csv(
-        'dataset/drifts/drift_spam_only.txt',
+        'dataset/regression/SMSSpamCollection_diff',
         sep='\t',
         names=['label', 'message']
     )
