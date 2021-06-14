@@ -10,8 +10,8 @@ ensure_path_exists('dataset/drifts')
 
 
 def import_messages():
-    # messages = [line.rstrip() for line in open('dataset/SMSSpamCollection')]
-    messages = [line.rstrip() for line in open('dataset/regression/SMSSpamCollection_diff')]
+    messages = [line.rstrip() for line in open('dataset/SMSSpamCollection')]
+    # messages = [line.rstrip() for line in open('dataset/regression/SMSSpamCollection_diff')]
 
     # print('Total number of messages: ' + str(len(messages)))
     return messages

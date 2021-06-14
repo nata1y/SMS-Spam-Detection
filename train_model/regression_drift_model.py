@@ -13,7 +13,9 @@ datasets = ['dataset/SMSSpamCollection',
             'dataset/drifts/drift_flip.txt',
             'dataset/drifts/drift_random_0.5.txt',
             'dataset/drifts/drift_mutation.txt',
-            'dataset/drifts/drift_mutation.txt']
+            'dataset/drifts/drift_concept.txt',
+            'dataset/drifts/drift_ham_only.txt',
+            'dataset/drifts/drift_spam_only.txt']
 
 
 def _load_data(set):
