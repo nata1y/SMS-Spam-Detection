@@ -10,7 +10,7 @@ WORKDIR /root/
 ENV VIRTUAL_ENV=/root/venv
 RUN python -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-ENV PYTHONPATH="${PYTHONPATH}:/root/project/"
+ENV PYTHONPATH="${PYTHONPATH}:/root/"
 
 COPY requirements.txt .
 RUN python -m pip install --upgrade pip &&\
@@ -26,6 +26,17 @@ COPY monitoring/ ./monitoring
 
 COPY dataset/ ./dataset
 COPY output/ ./output
+
+RUN mkdir -p dataset/drifts &&\
+    mkdir -p dataset/drifts_incoming &&\
+    mkdir -p dataset/regression &&\
+    mkdir -p output/regression
+
+RUN python train_model/get_data.py &&\
+    python train_model/text_preprocessing.py &&\
+    python train_model/text_classification.py &&\
+    python train_model/generate_drifts.py && \
+    python train_model/regression_drift_model.py
 
 EXPOSE 8080
 

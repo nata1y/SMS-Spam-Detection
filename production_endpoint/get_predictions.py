@@ -1,28 +1,12 @@
 import json
-
-import pandas as pd
-import numpy as np
 import requests
+import pandas as pd
 
-import string
-import nltk
-from nltk.corpus import stopwords
-from nltk.stem import SnowballStemmer
-
-from deploy_model.util import ensure_path_exists, progressBar
-
-nltk.download('stopwords')
-ensure_path_exists('regression_output')
-
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from sklearn.preprocessing import FunctionTransformer
-from sklearn.pipeline import make_union, make_pipeline
-from joblib import dump
-
+from deploy_model.util import progressBar
 
 def _load_data():
     messages = pd.read_csv(
-        'regression_dataset/SMSSpamCollection_diff',
+        'dataset/drifts_incoming/drift_random_0.5.txt',
         sep='\t',
         names=['label', 'message']
     )

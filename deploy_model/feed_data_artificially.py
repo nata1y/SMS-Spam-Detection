@@ -1,18 +1,17 @@
-import copy
-
-import joblib
 import pandas as pd
+import numpy as np
+from joblib import load
 
 from deploy_model.proccess_stats import compare_nlp_models, compare_loss_dist, get_regression_predictions
 from deploy_model.util import progressBar
-import numpy as np
+
 
 
 def get_all_stats(data, predictions, clf, types=["loss", "nlp", "reg"]):
     dt = 'api'
     losses = []
     stats_nlp, stats_loss, regression_stats = None, None, None
-    preprocessor = joblib.load('output/preprocessor.joblib')
+    preprocessor = load('output/preprocessor.joblib')
 
     for idx, row in predictions.iterrows():
         progressBar(idx, len(predictions))

@@ -9,7 +9,7 @@ The codebase was originally adapted from: https://github.com/rohan8594/SMS-Spam-
 a) Clone repo.
 
 ```
-$ git clone https://github.com/luiscruz/SMS-Spam-Detection.git
+$ git clone https://gitlab.com/nata1y/SMS-Spam-Detection
 $ cd SMS-Spam-Detection
 $ mkdir output
 ```
@@ -26,7 +26,7 @@ b2) Alternatively, use Docker for dependencies and volumes.
 
 ```
 $ docker build --progress plain . -t docker-sms
-$ docker run -it --rm -v "$(pwd)":/root/project -p "8080:8080" docker-sms
+$ docker run -it --rm -v ${PWD}:/root/project -p "8080:8080" docker-sms
 ~# $ cd project
 ```
 
@@ -47,19 +47,32 @@ NOTE: add `host="0.0.0.0"` parameter to `app.run` call in `deploy_model/serve_mo
 $ python deploy_model/serve_model.py
 ```
 
-e) Run the regression model
+b3) Or, use docker-compose and automatically train and host.
+
+```
+$ docker-compose -f docker-compose.train.yml build
+$ docker-compose -f docker-compose.train.yml up -d && ./get_training_data.sh && docker-compose -f docker-compose.train.yml down
+```
+
+Or, if you use windows run the commands inside the script instead of the script.
+
+Use the following command if you want to run the system without retraining everything
+```
+docker-compose up --build
+```
+
+e) Production endpoint
 
 Retrieves and splits the dataset from the first 1000 labels on which the model is trained. 
 Get the predictions via HTTP requests from the model like in an actual deployment setup.
-Run LogisticRegression on the predicted set, actual set and model set for comparison.
 
 NOTE: to get predictions from inside another docker container use `docker run -it --rm -v "$(pwd)":/root/project --net=host docker-sms`, since the port is already opened for the server, but you want to connect to its local network.
+OR: if you use docker-compose run `docker exec -it <container_id> bash` to run the deploy script.
 
 ```
-$ python regression_model/get_data.py
-$ python regression_model/read_data.py
-$ python regression_model/get_predictions.py
-$ python regression_model/predict_data.py
+$ python production_endpoint/get_data.py
+$ python production_endpoint/generate_drifts.py
+$ python production_endpoint/get_predictions.py
 ```
 
 You can test the API using the following:

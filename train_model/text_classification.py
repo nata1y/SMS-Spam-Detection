@@ -5,20 +5,18 @@ Creates 3 files in output: `accuracy_scores.png`,
 """
 import json
 import random
-from datetime import datetime
-
 import pandas as pd
-from sklearn import preprocessing
-from sklearn.model_selection import train_test_split, cross_val_score
+import matplotlib.pyplot as plt
+
+from datetime import datetime
+from joblib import dump, load
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, BaggingClassifier
 from sklearn.metrics import accuracy_score, classification_report
-from joblib import dump, load
-import matplotlib
-import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split, cross_val_score
 
 from deploy_model.util import ensure_path_exists
 from train_model.text_preprocessing import _load_data
@@ -62,7 +60,6 @@ def main():
     raw_data = _load_data()
     train_nlp_model(raw_data)
     preprocessed_data = load('output/preprocessed_data.joblib')
-    le = load('output/label_encoder.joblib')
 
     (X_train, X_test,
      y_train, y_test,
