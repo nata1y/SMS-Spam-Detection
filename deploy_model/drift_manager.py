@@ -7,9 +7,6 @@ from datadrift_detect.detect_alibi import _detect_drift
 from deploy_model.feed_data_artificially import get_all_stats
 from deploy_model.util import load_best_clf
 
-LABEL_DATA = "VANILLA_PROD"
-
-
 class DriftManager:
     window_size = 100
     metricsManager: MetricsManager
@@ -19,6 +16,7 @@ class DriftManager:
     stats: list
     incoming_real_labels: list
     preprocessed: list
+    drift_type: str
 
     def __init__(self, metricsManager: MetricsManager) -> None:
         self.metricsManager = metricsManager
@@ -29,6 +27,7 @@ class DriftManager:
         self.data = np.array([])
         self.preprocessed = np.array([])
         self.clf, _ = load_best_clf()
+        self.drift_type = ''
         self.incoming_real_labels = pd.read_csv(
             'dataset/regression/SMSSpamCollection_diff',
             sep='\t',
@@ -63,7 +62,8 @@ class DriftManager:
                                       "Drift Detection test metric",
                                       0)
 
-    def add_call(self, prediction):
+    def add_call(self, prediction, drift_type):
+        self.drift_type = drift_type
         self.calls = self.calls + 1
         if prediction[0] == 'ham':
             self.preprocessed = np.append(self.preprocessed, [0])
@@ -89,7 +89,7 @@ class DriftManager:
         # for detection in _detect_drift(last_10, self.preprocessed):
         #     print("DRIFT DETECTED" if detection['data']['is_drift'] == 1 else "")
         #     print(detection['meta']['name'] + ": " + str(detection['data']))
-        analysis_csv_row = f"{LABEL_DATA},"
+        analysis_csv_row = f"{self.drift_type},"
 
         print("Checking complete incoming dataset for data drift...")
         full_set = pd.DataFrame(np.array(self.data[-self.window_size:]), columns=['label', 'message'])

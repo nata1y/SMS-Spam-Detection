@@ -55,6 +55,7 @@ def predict():
     global stats
     input_data = request.get_json()
     sms = input_data.get('sms')
+    drift_type = input_data.get('drift_type')
     processed_sms = prepare(sms)
     model, _ = load_best_clf()
     prediction = model.predict(processed_sms)[0]
@@ -67,7 +68,7 @@ def predict():
                 }, ignore_index=True)
     stats.to_csv('output/stats/stats_from_wild.csv', index=False)
 
-    manager.add_call([prediction, sms])
+    manager.add_call([prediction, sms], drift_type)
 
     return jsonify({
         "result": prediction,
