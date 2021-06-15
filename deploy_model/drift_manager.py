@@ -8,15 +8,15 @@ from deploy_model.feed_data_artificially import get_all_stats
 from deploy_model.util import load_best_clf
 
 class DriftManager:
-    window_size = 100
+    window_size = 500
     metricsManager: MetricsManager
 
     calls: int
     data: list
     stats: list
-    incoming_real_labels: list
     preprocessed: list
     drift_type: str
+    real_labels: list
 
     def __init__(self, metricsManager: MetricsManager) -> None:
         self.metricsManager = metricsManager
@@ -28,11 +28,7 @@ class DriftManager:
         self.preprocessed = np.array([])
         self.clf, _ = load_best_clf()
         self.drift_type = ''
-        self.incoming_real_labels = pd.read_csv(
-            'dataset/regression/SMSSpamCollection_diff',
-            sep='\t',
-            names=['label', 'message']
-        )
+        self.real_labels = []
         try:
             with open('output/stats/thresholds.json', 'r') as j:
                 self.thresholds = json.loads(j.read())
@@ -44,6 +40,12 @@ class DriftManager:
             }
             with open('output/stats/thresholds.json', 'w') as outfile:
                 json.dump(self.thresholds, outfile)
+
+    def set_window_size(self, size):
+        self.window_size = size
+
+    def add_real_label(self, real_label):
+        self.real_labels.append(real_label)
 
     def initializeMetrics(self):
         # metric: driftdetection_nlp_results
@@ -82,18 +84,10 @@ class DriftManager:
         self.driftdetect_test_metric += 2
         self.metricsManager.updateMetric("driftdetection_test_metric", self.driftdetect_test_metric)
 
-        # # # TODO: add discounted moving average?
-        # print("Checking last 10 elements for data drift...")
-        # indices = np.array([-1, -2, -3, -4, -5, -6, -7, -8, -9, -10])
-        # last_10 = pd.DataFrame(np.take(self.data, indices, axis=0), columns=['label', 'message'])
-        # for detection in _detect_drift(last_10, self.preprocessed):
-        #     print("DRIFT DETECTED" if detection['data']['is_drift'] == 1 else "")
-        #     print(detection['meta']['name'] + ": " + str(detection['data']))
         analysis_csv_row = f"{self.drift_type},"
 
         print("Checking complete incoming dataset for data drift...")
         full_set = pd.DataFrame(np.array(self.data[-self.window_size:]), columns=['label', 'message'])
-        print(full_set.shape)
         for detection in _detect_drift(full_set, self.preprocessed[-self.window_size:]):
             name = detection['meta']['name']
             drift_bool = detection['data']['is_drift']
@@ -108,20 +102,12 @@ class DriftManager:
                 analysis_csv_row += f"{dist}," 
  
 
-            #print("DRIFT DETECTED" if detection['data']['is_drift'] == 1 else "")
-            detection_data = str(detection['data'])
-            #csv_analysis_header += 
-            #print("############################################")
-            #print(detection['meta']['name'] + " " + str(detection['data']['distance']) + " " + str(detection['data']['is_drift']))
-
-            #print("############################################")
-            #print(detection['meta']['name'] + ": " + detection_data)
 
 
-        print("Check for concept drift using NLP and loss distribution")
+        # print("Check for concept drift using NLP and loss distribution")
         nlp_stats, loss_stats, regression_stats = get_all_stats(
-            self.incoming_real_labels[(len(self.data) - self.window_size):len(self.data)].reset_index(),
-            full_set, self.clf)
+            self.real_labels[-self.window_size:],
+            full_set, self.clf, self.window_size)
 
         # METRIC: driftdetection_nlp_results
         nlp_results = str(nlp_stats.iloc[-1:])
@@ -130,9 +116,6 @@ class DriftManager:
 
         value = nlp_stats['kl_divergence'].tolist()[-1]
         drift_bool = nlp_stats['kl_divergence'].tolist()[-1] > self.thresholds['nlp']
-
-        if drift_bool:
-            print("====================== NLP DRIFT DETECTED =============================")
 
         analysis_csv_row += f"{value},{(1 if drift_bool else 0)},"
 
@@ -144,9 +127,6 @@ class DriftManager:
         value = loss_stats['loss_dist'].tolist()[-1]
         drift_bool = loss_stats['loss_dist'].tolist()[-1] > self.thresholds['loss']
 
-        if drift_bool:
-            print("====================== LOSS DRIFT DETECTED ============================")
-
         analysis_csv_row += f"{value},{(1 if drift_bool else 0)},"
 
         # METRIC: driftdetection_regression_results
@@ -157,12 +137,7 @@ class DriftManager:
         value = regression_stats['predicted_performance'].tolist()[-1]
         drift_bool = regression_stats['predicted_performance'].tolist()[-1] < self.thresholds['regression']
 
-        if drift_bool:
-            print("====================== REG DRIFT DETECTED ============================")
-
         analysis_csv_row += f"{value},{(1 if drift_bool else 0)}"
-
-        print(analysis_csv_row)
 
         f = open("output/combined_stats.csv", "a")
         f.write(analysis_csv_row + "\n")

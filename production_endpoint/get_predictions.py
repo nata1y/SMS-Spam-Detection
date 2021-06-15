@@ -39,7 +39,7 @@ class DriftTypes():
 
 def _load_drift(filename):
     messages = pd.read_csv(drift_directory + filename,
-        sep='\t', names=['label', 'message'])
+        sep='\t', names=['label', 'message', 'real_label'])
     return messages
 
 
@@ -52,45 +52,33 @@ def _load_data():
     return messages
 
 def main():
-    raw_data = _load_training_data()
+    vanilla_train = _load_training_data()
 
-    for i, row in raw_data.iterrows():
-        progressBar(i, len(raw_data))
+    print("Starting vanilla train run")
+    for i, row in vanilla_train.iterrows():
+        progressBar(i, len(vanilla_train))
         res = requests.post("http://127.0.0.1:8080/predict", headers={'Content-Type': 'application/json'},
-                            json={'sms': row['message'], 'drift_type': 'VANILLA_TRAINING'})
-        # try:
-        #     data = json.loads(res.content.decode('utf-8'))
-        #     print(f"RESPONSE: {data}")
-        # except:
-        #     print(res.content)
+                            json={'sms': row['message'], 'real_label': row['label'], drift_type': 'VANILLA_TRAINING'})
 
-    raw_data = _load_data()
+    vanilla_test = _load_data()
 
-    for i, row in raw_data.iterrows():
-        progressBar(i, len(raw_data))
+    print("Starting vanilla test run")
+    for i, row in vanilla_test.iterrows():
+        progressBar(i, len(vanilla_test))
         res = requests.post("http://127.0.0.1:8080/predict", headers={'Content-Type': 'application/json'},
-                            json={'sms': row['message'], 'drift_type': 'VANILLA_INCOMING'})
-        # try:
-        #     data = json.loads(res.content.decode('utf-8'))
-        #     print(f"RESPONSE: {data}")
-        # except:
-        #     print(res.content)
+                            json={'sms': row['message'], 'real_label': row['label'], 'drift_type': 'VANILLA_INCOMING'})
 
     dt = DriftTypes()
     drifts = dt.get_drifts()
     for key in drifts:
+        print("Starting drift " + key + "\n")
         dt.set_current_name(key)
         raw_drift = _load_drift(dt.get_current_filename())
 
         for i, row in raw_drift.iterrows():
             progressBar(i, len(raw_drift))
             res = requests.post("http://127.0.0.1:8080/predict", headers={'Content-Type': 'application/json'},
-                                json={'sms': row['message'], 'drift_type': dt.get_current_name()})
-            # try:
-            #     data = json.loads(res.content.decode('utf-8'))
-            #     print(f"RESPONSE: {data}")
-            # except:
-            #     print(res.content)
+                                json={'sms': row['message'], 'label': row['label'], 'real_label': row['real_label'], 'drift_type': dt.get_current_name(), 'window_size': round(len(raw_drift) / 6)})
 
 
 if __name__ == "__main__":
