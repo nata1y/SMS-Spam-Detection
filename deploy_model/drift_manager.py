@@ -48,18 +48,18 @@ class DriftManager:
         # metric: driftdetection_nlp_results
         self.metricsManager.newMetric("driftdetection_nlp_results",
                                       "Drift Detection results of the NLP-model",
-                                      0)
+                                      0, 0)
         # metric: driftdetection_loss_results
         self.metricsManager.newMetric("driftdetection_loss_results",
                                       "Drift Detection results of the loss model",
-                                      0)
+                                      0, 0)
         # metric: driftdetection_regression_results
         self.metricsManager.newMetric("driftdetection_regression_results",
                                       "Drift Detection results of the regression model",
-                                      0)
+                                      0, 0)
         self.metricsManager.newMetric("driftdetection_test_metric",
                                       "Drift Detection test metric",
-                                      0)
+                                      0, 0)
 
     def add_call(self, prediction):
         self.calls = self.calls + 1
@@ -78,15 +78,7 @@ class DriftManager:
     driftdetect_test_metric: int = 0
     def calculate_drifts(self):
         self.driftdetect_test_metric += 2
-        self.metricsManager.updateMetric("driftdetection_test_metric", self.driftdetect_test_metric)
-
-        # # # TODO: add discounted moving average?
-        # print("Checking last 10 elements for data drift...")
-        # indices = np.array([-1, -2, -3, -4, -5, -6, -7, -8, -9, -10])
-        # last_10 = pd.DataFrame(np.take(self.data, indices, axis=0), columns=['label', 'message'])
-        # for detection in _detect_drift(last_10, self.preprocessed):
-        #     print("DRIFT DETECTED" if detection['data']['is_drift'] == 1 else "")
-        #     print(detection['meta']['name'] + ": " + str(detection['data']))
+        self.metricsManager.updateMetric("driftdetection_test_metric", self.driftdetect_test_metric, self.driftdetect_test_metric)
 
         print("Checking complete incoming dataset for data drift...")
         full_set = pd.DataFrame(np.array(self.data[-self.window_size:]), columns=['label', 'message'])
@@ -103,7 +95,8 @@ class DriftManager:
 
         # METRIC: driftdetection_nlp_results
         nlp_results = str(nlp_stats.iloc[-1:])
-        self.metricsManager.updateMetric("driftdetection_nlp_results", nlp_results)
+        nlp_results_smooth = str(nlp_stats.ewm(com=0.5).mean().iloc[-1:])
+        self.metricsManager.updateMetric("driftdetection_nlp_results", nlp_results, nlp_results_smooth)
         print("NLP Results:\n " + nlp_results)
 
         if nlp_stats['kl_divergence'].tolist()[-1] > self.thresholds['nlp']:
@@ -111,7 +104,8 @@ class DriftManager:
 
         # METRIC: driftdetection_loss_results
         loss_results = str(loss_stats.iloc[-1:])
-        self.metricsManager.updateMetric("driftdetection_loss_results", loss_results)
+        loss_results_smooth = str(loss_stats.ewm(com=0.5).mean().iloc[-1:])
+        self.metricsManager.updateMetric("driftdetection_loss_results", loss_results, loss_results_smooth)
         print("Loss Results:\n" + loss_results)
 
         if loss_stats['loss_dist'].tolist()[-1] > self.thresholds['loss']:
@@ -119,7 +113,8 @@ class DriftManager:
 
         # METRIC: driftdetection_regression_results
         regression_results = str(regression_stats.iloc[-1:])
-        self.metricsManager.updateMetric("driftdetection_regression_results", regression_results)
+        regression_results_smooth = str(regression_stats.ewm(com=0.5).mean().iloc[-1:])
+        self.metricsManager.updateMetric("driftdetection_regression_results", regression_results, regression_results_smooth)
         print("Regression Results:\n" + regression_results)
 
         if regression_stats['predicted_performance'].tolist()[-1] < self.thresholds['regression']:
