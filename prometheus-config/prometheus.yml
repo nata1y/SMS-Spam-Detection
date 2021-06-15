@@ -24,7 +24,7 @@ scrape_configs:
   - job_name: 'monitoring'
 
     # Override the global default and scrape targets from this job every 5 seconds.
-    scrape_interval: 2s
+    scrape_interval: 100ms
 
     static_configs:
-      - targets: ['server-sms:8080']
+      - targets: ['server-sms:8080', 'grafana-renderer-sms:8081']

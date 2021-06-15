@@ -74,7 +74,7 @@ def get_regression_predictions(percentiles, dt):
         stats_regression.to_csv('output/stats/regression_stats.csv', index=False)
 
     now = datetime.now()
-    reg_model = load('output/regression/regression_model.joblib')
+    reg_model = load('output/regression_model.joblib')
     res = reg_model.predict(percentiles)
     stats_regression = stats_regression.append({
                     "date": now.strftime("%m-%d-%Y"),

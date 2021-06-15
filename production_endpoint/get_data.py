@@ -7,9 +7,9 @@ import zipfile
 from deploy_model.util import remove_file
 
 # URL = 'http://archive.ics.uci.edu/ml/machine-learning-databases/00228/smsspamcollection.zip'
-URL = 'https://surfdrive.surf.nl/files/index.php/s/OZRd9BcxhGkxTuy/download' # V2
+# URL = 'https://surfdrive.surf.nl/files/index.php/s/OZRd9BcxhGkxTuy/download' # V2
 # URL = 'https://surfdrive.surf.nl/files/index.php/s/H4e35DvjaX18pTI/download' # V3
-# URL = 'https://surfdrive.surf.nl/files/index.php/s/HU5mY29RzxRlHCU/download' # V4
+URL = 'https://surfdrive.surf.nl/files/index.php/s/HU5mY29RzxRlHCU/download' # V4
 DIFF_DIR = "dataset"
 EXTRACT_DIR = "dataset/regression"
 

@@ -39,8 +39,20 @@ services:
       - ./grafana-config:/grafana-config
     command:
       - '--config=/grafana-config/grafana.ini'
+    environment:
+      GF_RENDERING_SERVER_URL: http://grafana-renderer-sms:8081/render
+      GF_RENDERING_CALLBACK_URL: http://grafana-sms:3000/
+      GF_LOG_FILTERS: rendering:debug
     ports:
       - 3000:3000
+
+  renderer:
+    image: grafana/grafana-image-renderer:latest
+    container_name: grafana-renderer-sms
+    ports:
+      - 8081
+    environment:
+      ENABLE_METRICS: 'true'
 
 volumes:
   prometheus_data: {}

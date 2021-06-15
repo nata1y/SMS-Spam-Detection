@@ -51,7 +51,7 @@ def train_regression_model():
             scores += [accuracy_score(classifier_res, y_sample)]
 
     drift_detector.fit(percentiles_stats, scores)
-    dump(drift_detector, 'output/regression/regression_model.joblib')
+    dump(drift_detector, 'output/regression_model.joblib')
 
 
 if __name__ == "__main__":

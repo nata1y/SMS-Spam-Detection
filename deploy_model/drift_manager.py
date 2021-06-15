@@ -77,7 +77,9 @@ class DriftManager:
 
     driftdetect_test_metric: int = 0
     def calculate_drifts(self):
-        self.driftdetect_test_metric += 2
+        if self.driftdetect_test_metric >= 1.0:
+            self.driftdetect_test_metric = 0.0
+        self.driftdetect_test_metric += 0.1
         self.metricsManager.updateMetric("driftdetection_test_metric", self.driftdetect_test_metric)
 
         # # # TODO: add discounted moving average?
@@ -124,7 +126,6 @@ class DriftManager:
 
         if regression_stats['predicted_performance'].tolist()[-1] < self.thresholds['regression']:
             print("====================== REG DRIFT DETECTED ============================")
-
 
 if __name__ == '__main__':
     DriftManager().calculate_drifts()
