@@ -58,7 +58,7 @@ def main():
     for i, row in vanilla_train.iterrows():
         progressBar(i, len(vanilla_train))
         res = requests.post("http://127.0.0.1:8080/predict", headers={'Content-Type': 'application/json'},
-                            json={'sms': row['message'], 'real_label': row['label'], drift_type': 'VANILLA_TRAINING'})
+                            json={'sms': row['message'], 'real_label': row['label'], 'drift_type': 'VANILLA_TRAINING'})
 
     vanilla_test = _load_data()
 
