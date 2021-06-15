@@ -57,9 +57,6 @@ class DriftManager:
         self.metricsManager.newMetric("driftdetection_regression_results",
                                       "Drift Detection results of the regression model",
                                       0)
-        self.metricsManager.newMetric("driftdetection_test_metric",
-                                      "Drift Detection test metric",
-                                      0)
 
     def add_call(self, prediction):
         self.calls = self.calls + 1
@@ -75,13 +72,7 @@ class DriftManager:
             if len(self.data) % self.window_size == 0:
                 self.calculate_drifts()
 
-    driftdetect_test_metric: int = 0
     def calculate_drifts(self):
-        if self.driftdetect_test_metric >= 1.0:
-            self.driftdetect_test_metric = 0.0
-        self.driftdetect_test_metric += 0.1
-        self.metricsManager.updateMetric("driftdetection_test_metric", self.driftdetect_test_metric)
-
         # # # TODO: add discounted moving average?
         # print("Checking last 10 elements for data drift...")
         # indices = np.array([-1, -2, -3, -4, -5, -6, -7, -8, -9, -10])
