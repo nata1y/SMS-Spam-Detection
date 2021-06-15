@@ -143,5 +143,4 @@ class MetricsManager:
         metrics: str = ""
         for (_, metric) in self.metrics.items():
             metrics += metric.getPrometheusString()
-            print(metrics)
         return metrics

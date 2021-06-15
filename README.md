@@ -49,14 +49,18 @@ $ python deploy_model/serve_model.py
 
 b3) Or, use docker-compose and automatically train and host.
 
+For Linux
 ```
 $ docker-compose -f docker-compose.train.yml build
 $ docker-compose -f docker-compose.train.yml up -d && ./get_training_data.sh && docker-compose -f docker-compose.train.yml down
 ```
+For windows:
+```
+$ docker-compose -f docker-compose.train.yml build
+$ docker-compose -f docker-compose.train.yml up -d && ./get_training_data.bat && docker-compose -f docker-compose.train.yml down
+```
 
-Or, if you use windows run the commands inside the script instead of the script.
-
-Use the following command if you want to run the system without retraining everything
+From now on, use this command to run the system without retraining everything
 ```
 docker-compose up --build
 ```
