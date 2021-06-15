@@ -170,14 +170,17 @@ def create_drift_ham():
 
     f.close()
 
-
-if __name__ == "__main__":
+def generate_all_drifts():
     create_drift_flip()
     create_random_drift(0.5)
     create_drift_mutation()
     create_drift_concept()
     create_drift_spam()
     create_drift_ham()
+
+
+if __name__ == "__main__":
+    generate_all_drifts()
 
 # Data detection using https://www.explorium.ai/blog/understanding-and-handling-data-and-concept-drift/
 

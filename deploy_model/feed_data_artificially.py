@@ -15,7 +15,8 @@ def get_all_stats(data, predictions, clf, types=["loss", "nlp", "reg"]):
 
     for idx, row in predictions.iterrows():
         progressBar(idx, len(predictions))
-        losses.append(0.0 if data.loc[idx, 'label'] == row['label'] else 1.0)
+        if len(data) > 0:
+            losses.append(0.0 if data.loc[idx, 'label'] == row['label'] else 1.0)
 
     classifier_stats = [x[0] for x in clf.predict_proba(preprocessor.transform(predictions['message']))]
     percentile = [[np.percentile(classifier_stats, i) for i in range(0, 101, 5)]]
