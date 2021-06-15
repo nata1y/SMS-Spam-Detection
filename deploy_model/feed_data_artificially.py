@@ -18,7 +18,7 @@ def get_all_stats(data, predictions, clf, window, types=["loss", "nlp", "reg"]):
         losses.append(0.0 if data[idx] == row['label'] else 1.0)
 
     classifier_stats = [x[0] for x in clf.predict_proba(preprocessor.transform(predictions['message']))]
-    percentile = [[np.percentile(classifier_stats, i) for i in range(0, window, 5)]]
+    percentile = [[np.percentile(classifier_stats, i) for i in range(0, 101, 5)]]
 
     if (predictions.shape[0]) % window == 0:
         if "nlp" in types:
