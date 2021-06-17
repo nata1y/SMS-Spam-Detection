@@ -51,18 +51,18 @@ class DriftManager:
         # metric: driftdetection_nlp_results
         self.metricsManager.newMetric("driftdetection_nlp_results",
                                       "Drift Detection results of the NLP-model",
-                                      0)
+                                      0, 0)
         # metric: driftdetection_loss_results
         self.metricsManager.newMetric("driftdetection_loss_results",
                                       "Drift Detection results of the loss model",
-                                      0)
+                                      0, 0)
         # metric: driftdetection_regression_results
         self.metricsManager.newMetric("driftdetection_regression_results",
                                       "Drift Detection results of the regression model",
-                                      0)
+                                      0, 0)
         self.metricsManager.newMetric("driftdetection_test_metric",
                                       "Drift Detection test metric",
-                                      0)
+                                      0, 0)
 
     def add_call(self, prediction, drift_type):
         self.drift_type = drift_type
@@ -82,8 +82,7 @@ class DriftManager:
     driftdetect_test_metric: int = 0
     def calculate_drifts(self):
         self.driftdetect_test_metric += 2
-        self.metricsManager.updateMetric("driftdetection_test_metric", self.driftdetect_test_metric)
-
+        self.metricsManager.updateMetric("driftdetection_test_metric", self.driftdetect_test_metric, self.driftdetect_test_metric)
         analysis_csv_row = f"{self.drift_type},"
 
         print("Checking complete incoming dataset for data drift...")
@@ -111,7 +110,8 @@ class DriftManager:
 
         # METRIC: driftdetection_nlp_results
         nlp_results = str(nlp_stats.iloc[-1:])
-        self.metricsManager.updateMetric("driftdetection_nlp_results", nlp_results)
+        nlp_results_smooth = str(nlp_stats.ewm(com=0.5).mean().iloc[-1:])
+        self.metricsManager.updateMetric("driftdetection_nlp_results", nlp_results, nlp_results_smooth)
         print("NLP Results:\n " + nlp_results)
 
         value = nlp_stats['kl_divergence'].tolist()[-1]
@@ -121,7 +121,8 @@ class DriftManager:
 
         # METRIC: driftdetection_loss_results
         loss_results = str(loss_stats.iloc[-1:])
-        self.metricsManager.updateMetric("driftdetection_loss_results", loss_results)
+        loss_results_smooth = str(loss_stats.ewm(com=0.5).mean().iloc[-1:])
+        self.metricsManager.updateMetric("driftdetection_loss_results", loss_results, loss_results_smooth)
         print("Loss Results:\n" + loss_results)
 
         value = loss_stats['loss_dist'].tolist()[-1]
@@ -131,7 +132,8 @@ class DriftManager:
 
         # METRIC: driftdetection_regression_results
         regression_results = str(regression_stats.iloc[-1:])
-        self.metricsManager.updateMetric("driftdetection_regression_results", regression_results)
+        regression_results_smooth = str(regression_stats.ewm(com=0.5).mean().iloc[-1:])
+        self.metricsManager.updateMetric("driftdetection_regression_results", regression_results, regression_results_smooth)
         print("Regression Results:\n" + regression_results)
 
         value = regression_stats['predicted_performance'].tolist()[-1]
