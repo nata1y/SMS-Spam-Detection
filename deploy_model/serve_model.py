@@ -55,9 +55,18 @@ def predict():
     global stats
     input_data = request.get_json()
     sms = input_data.get('sms')
+    drift_type = input_data.get('drift_type')
     processed_sms = prepare(sms)
     model, _ = load_best_clf()
-    prediction = model.predict(processed_sms)[0]
+    if drift_type == 'VANILLA_TRAINING' or drift_type == 'VANILLA_INCOMING':
+      prediction = model.predict(processed_sms)[0]
+    else:
+      prediction = input_data.get('label')
+      window_size = input_data.get('window_size')
+      manager.set_window_size(window_size)
+    
+    real_label = input_data.get('real_label')
+    manager.add_real_label(real_label)
 
     stats = stats.append({
                     "result": prediction,
@@ -67,7 +76,7 @@ def predict():
                 }, ignore_index=True)
     stats.to_csv('output/stats/stats_from_wild.csv', index=False)
 
-    manager.add_call([prediction, sms])
+    manager.add_call([prediction, sms], drift_type)
 
     return jsonify({
         "result": prediction,

@@ -4,6 +4,7 @@ import random
 from nltk.tokenize import word_tokenize
 
 from deploy_model.util import ensure_path_exists
+from production_endpoint.get_data import get_data
 
 nltk.download('punkt')
 
@@ -13,10 +14,8 @@ ensure_path_exists(directory)
 
 
 def import_messages():
-    # messages = [line.rstrip() for line in open('dataset/SMSSpamCollection')]
+    get_data()
     messages = [line.rstrip() for line in open('dataset/regression/SMSSpamCollection_diff')]
-
-    # print('Total number of messages: ' + str(len(messages)))
     return messages
 
 
@@ -28,6 +27,7 @@ def create_drift_flip():
     for msg in messages:
         splitted = msg.split("\t")
         label = splitted[0]
+        real_label = label
         msg = splitted[1]
 
         if label == "spam":
@@ -35,7 +35,7 @@ def create_drift_flip():
         elif label == "ham":
             label = "spam"
 
-        f.write(f'{label}\t{msg}\n')
+        f.write(f'{label}\t{msg}\t{real_label}\n')
 
     f.close()
 
@@ -48,6 +48,7 @@ def create_random_drift(probability):
     for msg in messages:
         splitted = msg.split("\t")
         label = splitted[0]
+        real_label = label
         msg = splitted[1]
 
         if random.random() > probability:
@@ -56,7 +57,7 @@ def create_random_drift(probability):
             elif label == "ham":
                 label = "spam"
 
-        f.write(f'{label}\t{msg}\n')
+        f.write(f'{label}\t{msg}\t{real_label}\n')
 
     f.close()
 
@@ -89,6 +90,7 @@ def create_drift_mutation():
     for msg in messages:
         splitted = msg.split("\t")
         label = splitted[0]
+        real_label = label
         msg = splitted[1]
 
         if label == "spam":
@@ -113,13 +115,14 @@ def create_drift_mutation():
     for msg in messages:
         splitted = msg.split("\t")
         label = splitted[0]
+        real_label = label
         msg = splitted[1]
 
         if label == "ham":
             for i in range(0, 5):
                 msg += " " + random.choice(top_worst)
 
-        f.write(f'{label}\t{msg}\n')
+        f.write(f'{label}\t{msg}\t{real_label}\n')
 
     f.close()
 
@@ -132,9 +135,10 @@ def create_drift_concept():
     for msg in messages[:int(len(messages)/2)]:
         splitted = msg.split("\t")
         label = splitted[0]
+        real_label = label
         msg = splitted[1]
 
-        f.write(f'{label}\t{msg}\n')
+        f.write(f'{label}\t{msg}\t{real_label}\n')
 
     f.close()
 
@@ -147,10 +151,11 @@ def create_drift_spam():
     for msg in messages:
         splitted = msg.split("\t")
         label = splitted[0]
+        real_label = label
         msg = splitted[1]
 
         if label == "spam":
-        	f.write(f'{label}\t{msg}\n')
+        	f.write(f'{label}\t{msg}\t{real_label}\n')
 
     f.close()
 
@@ -163,21 +168,25 @@ def create_drift_ham():
     for msg in messages:
         splitted = msg.split("\t")
         label = splitted[0]
+        real_label = label
         msg = splitted[1]
 
         if label == "ham":
-        	f.write(f'{label}\t{msg}\n')
+        	f.write(f'{label}\t{msg}\t{real_label}\n')
 
     f.close()
 
-
-if __name__ == "__main__":
+def generate_all_drifts():
     create_drift_flip()
     create_random_drift(0.5)
     create_drift_mutation()
     create_drift_concept()
     create_drift_spam()
     create_drift_ham()
+
+
+if __name__ == "__main__":
+    generate_all_drifts()
 
 # Data detection using https://www.explorium.ai/blog/understanding-and-handling-data-and-concept-drift/
 
