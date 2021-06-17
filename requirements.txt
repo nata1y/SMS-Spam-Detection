@@ -11,5 +11,6 @@ dvc==2.1.0
 dvc[gdrive]
 mllint
 pylint
+anybadge
 requests
 POT

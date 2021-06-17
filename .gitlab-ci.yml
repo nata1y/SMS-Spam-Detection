@@ -40,11 +40,7 @@ test:
 
 lint:
   script:
-    - pylint train_model
-    - pylint deploy_model
-    - pylint monitoring
-    - pylint datadrift_detect
-    - pylint production_endpoint
+    - pylint train_model deploy_model monitoring datadrift_detect production_endpoint
     
 run:
   script:

@@ -57,9 +57,6 @@ class DriftManager:
         self.metricsManager.newMetric("driftdetection_regression_results",
                                       "Drift Detection results of the regression model",
                                       0, 0)
-        self.metricsManager.newMetric("driftdetection_test_metric",
-                                      "Drift Detection test metric",
-                                      0, 0)
 
     def add_call(self, prediction):
         self.calls = self.calls + 1
