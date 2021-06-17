@@ -3,7 +3,7 @@ import numpy as np
 import json
 
 from monitoring.MetricsManager import MetricsManager
-from datadrift_detect.detect_alibi import _detect_drift
+from datadrift_detect.detect_alibi import detect_drift
 from deploy_model.feed_data_artificially import get_all_stats
 from deploy_model.util import load_best_clf
 
@@ -80,7 +80,7 @@ class DriftManager:
         print("Checking complete incoming dataset for data drift...")
         full_set = pd.DataFrame(np.array(self.data[-self.window_size:]), columns=['label', 'message'])
         print(full_set.shape)
-        for detection in _detect_drift(full_set, self.preprocessed[-self.window_size:]):
+        for detection in detect_drift(full_set, self.preprocessed[-self.window_size:]):
             print("DRIFT DETECTED" if detection['data']['is_drift'] == 1 else "")
             detection_data = str(detection['data'])
             print(detection['meta']['name'] + ": " + detection_data)

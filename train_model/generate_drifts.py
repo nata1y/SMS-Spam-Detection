@@ -1,6 +1,7 @@
 import nltk
 import string
 import random
+
 from nltk.tokenize import word_tokenize
 
 from deploy_model.util import ensure_path_exists
@@ -10,11 +11,7 @@ ensure_path_exists('dataset/drifts')
 
 
 def import_messages():
-    messages = [line.rstrip() for line in open('dataset/SMSSpamCollection')]
-    # messages = [line.rstrip() for line in open('dataset/regression/SMSSpamCollection_diff')]
-
-    # print('Total number of messages: ' + str(len(messages)))
-    return messages
+    return [line.rstrip() for line in open('dataset/SMSSpamCollection')]
 
 
 def create_drift_flip():
@@ -122,7 +119,7 @@ def create_drift_mutation():
 
 
 def create_drift_concept():
-    # Concept drift by reducing training size and splitting the dataset (see paper on 
+    # Concept drift by reducing training size and splitting the dataset (see paper on
     # Concept drift for emails) previous papers used this approach
     f = open("dataset/drifts/drift_concept.txt", "w")
     messages = import_messages()
@@ -147,7 +144,7 @@ def create_drift_spam():
         msg = splitted[1]
 
         if label == "spam":
-        	f.write(f'{label}\t{msg}\n')
+            f.write(f'{label}\t{msg}\n')
 
     f.close()
 
@@ -163,7 +160,7 @@ def create_drift_ham():
         msg = splitted[1]
 
         if label == "ham":
-        	f.write(f'{label}\t{msg}\n')
+            f.write(f'{label}\t{msg}\n')
 
     f.close()
 
@@ -175,6 +172,3 @@ if __name__ == "__main__":
     create_drift_concept()
     create_drift_spam()
     create_drift_ham()
-
-# Data detection using https://www.explorium.ai/blog/understanding-and-handling-data-and-concept-drift/
-

@@ -8,7 +8,7 @@ def _load_data():
     messages = pd.read_csv(
         'dataset/drifts_incoming/drift_random_0.5.txt',
         sep='\t',
-        names=['label', 'message']
+        names=['label', 'message', 'real_label']
     )
     return messages
 

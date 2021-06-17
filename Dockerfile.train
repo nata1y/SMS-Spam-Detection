@@ -36,7 +36,7 @@ RUN python train_model/get_data.py &&\
     python train_model/text_preprocessing.py &&\
     python train_model/text_classification.py &&\
     python train_model/generate_drifts.py && \
-    python train_model/regression_drift_model.py
+    python train_model/regression_model.py
 
 EXPOSE 8080
 

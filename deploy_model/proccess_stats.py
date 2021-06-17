@@ -7,7 +7,7 @@ from joblib import load
 from sklearn.metrics import mutual_info_score as kl_divergence
 
 from deploy_model.util import ensure_path_exists
-from train_model.nlp_sms_model import doc_distance
+from train_model.nlp_model import NLPModel
 from train_model.text_preprocessing import prepare
 
 
@@ -56,7 +56,7 @@ def compare_nlp_models(doc, dt):
         stats_nlp.to_csv('output/stats/nlp_stats.csv', index=False)
 
     now = datetime.now()
-    distance = doc_distance(doc)
+    distance = NLPModel().doc_distance(doc)
     stats_nlp = stats_nlp.append({
                     "date": now.strftime("%m-%d-%Y"),
                     "kl_divergence": distance,
