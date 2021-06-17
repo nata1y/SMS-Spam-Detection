@@ -65,7 +65,7 @@ class DriftManager:
 
     def calculate_drifts(self):
         analysis_csv_row = f"{self.drift_type},"
-        
+
         print("Checking complete incoming dataset for data drift...")
 
         full_set = pd.DataFrame(np.array(self.data[-self.window_size:]), columns=['label', 'message'])

@@ -56,9 +56,6 @@ For Linux
 ```
 $ docker-compose -f docker-compose.train.yml build
 $ docker-compose -f docker-compose.train.yml up -d && ./get_training_data.sh && docker-compose -f docker-compose.train.yml down
-
-$ docker-compose -f docker-compose.train.yml up -d && ./get_training_data.bat && docker-compose -f docker-compose.train.yml down
-
 ```
 For windows:
 ```
