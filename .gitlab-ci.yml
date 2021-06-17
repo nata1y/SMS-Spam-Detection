@@ -40,7 +40,7 @@ test:
 
 lint:
   script:
-    - pylint train_model deploy_model monitoring datadrift_detect production_endpoint
+    - pylint --rcfile=.pylint.rc train_model deploy_model monitoring datadrift_detect production_endpoint
   #   - pylint --output-format=text train_model deploy_model monitoring datadrift_detect production_endpoint | tee pylint.txt || pylint-exit $?
   #   - score=$(sed -n 's/^Your code has been rated at \([-0-9.]*\)\/.*/\1/p' pylint.txt)
   #   - echo "Pylint score was $score"

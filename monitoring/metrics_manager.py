@@ -178,5 +178,5 @@ class MetricsManager:
         """
         metrics: str = ""
         for (_, metric) in self.metrics.items():
-            metrics += metric.getPrometheusString()
+            metrics += metric.get_prometheus_string()
         return metrics

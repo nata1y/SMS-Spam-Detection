@@ -7,7 +7,7 @@ import pandas as pd
 from flask import Flask, jsonify, request
 from flasgger import Swagger
 
-from monitoring.MetricsManager import MetricsManager
+from monitoring.metrics_manager import MetricsManager
 from deploy_model.drift_manager import DriftManager
 from deploy_model.util import load_best_clf
 from deploy_model.util import ensure_path_exists

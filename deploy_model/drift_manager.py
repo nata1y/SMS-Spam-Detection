@@ -1,9 +1,10 @@
+# pylint: disable=R0801
 '''Drift Manager manages the overall system.'''
 import json
 import pandas as pd
 import numpy as np
 
-from monitoring.MetricsManager import MetricsManager
+from monitoring.metrics_manager import MetricsManager
 from datadrift_detect.detect_alibi import detect_drift
 from deploy_model.feed_data_artificially import get_all_stats
 from deploy_model.util import load_best_clf
@@ -68,9 +69,11 @@ class DriftManager:
 
         analysis_csv_row += self.retrieve_data_results(full_set)
 
+        clf, _ = load_best_clf()
+
         nlp_stats, loss_stats, regression_stats = get_all_stats(
             self.real_labels[-self.window_size:],
-            full_set, load_best_clf(), self.window_size)
+            full_set, clf, self.window_size)
 
         nlp_results: float = self.retrieve_nlp_results(nlp_stats)
         is_npl_drift: bool = nlp_results > self.thresholds['nlp']

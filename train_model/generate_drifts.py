@@ -1,3 +1,4 @@
+# pylint: disable=R0801
 '''Generate script for different types of drifts.'''
 import string
 import random
