@@ -39,8 +39,6 @@ services:
       - ./grafana-config:/grafana-config
     command:
       - '--config=/grafana-config/grafana.ini'
-    environment:
-      GF_LOG_FILTERS: rendering:debug
     ports:
       - 3000:3000
 

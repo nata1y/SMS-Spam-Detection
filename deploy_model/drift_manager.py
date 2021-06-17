@@ -59,7 +59,6 @@ class DriftManager:
 
     def calculate_drifts(self):
         print("Checking complete incoming dataset for data drift...")
-
         full_set = pd.DataFrame(np.array(self.data[-self.window_size:]), columns=['label', 'message'])
         print(full_set.shape)
         for detection in _detect_drift(full_set, self.preprocessed[-self.window_size:]):
