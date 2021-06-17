@@ -6,14 +6,16 @@ The process_ and scrape_ prefixes are reserved.
 Avoid type as a label name, it’s too generic and often meaningless. You should also try where possible to avoid names that are likely to clash with target labels, such as region, zone, cluster, availability_zone, az, datacenter, dc, owner, customer, stage, service, environment and env. If, however, that’s what the application calls some resource, it’s best not to cause confusion by renaming it.
 
 """
+import pandas as pd
 
 
 class Metric:
     name: str = None
     value = None
+    smoothed_value = None
     description: str = None
 
-    def __init__(self, name: str, description: str, value):
+    def __init__(self, name: str, description: str, value, smoothed_value):
         """
         Constructor of a metric
         :param name: Name of the metric itself
@@ -22,6 +24,7 @@ class Metric:
         """
         self.name = name
         self.value = value
+        self.smoothed_value = smoothed_value
         self.description = description
 
     def __eq__(self, other):
@@ -53,11 +56,16 @@ class Metric:
     def setName(self, name: str):
         self.name = name
 
-    def getValue(self):
+    def getValue(self, smoothed=True):
+        if smoothed:
+            return self.smoothed_value
         return self.value
 
     def setValue(self, value):
         self.value = value
+
+    def setSmoothValue(self, value):
+        self.smoothed_value = value
 
     def getDescription(self):
         return self.description
@@ -98,7 +106,7 @@ class MetricsManager:
         """
         return "{}".format(name)
 
-    def newMetric(self, name: str, description="", value=""):
+    def newMetric(self, name: str, description="", value="", smooth_value=""):
         """
         Define a new metric for Prometheus
         :param name: Name of the metric
@@ -107,10 +115,10 @@ class MetricsManager:
         :return: void
         """
         key = self.__getMetricKey(name)
-        metric: Metric = Metric(name, description, value)
+        metric: Metric = Metric(name, description, value, smooth_value)
         self.metrics.update({key: metric})
 
-    def updateMetric(self, name: str, value):
+    def updateMetric(self, name: str, value, smooth_value):
         """
         Update an existing metric.
         If the metric does not exist, it creates a new one.
@@ -121,9 +129,10 @@ class MetricsManager:
         key = self.__getMetricKey(name)
         metric = self.metrics.get(key)
         if metric is None:
-            metric = Metric(name, "", value)
+            metric = Metric(name, "", value, smooth_value)
         else:
             metric.setValue(value)
+            metric.setSmoothValue(smooth_value)
         self.metrics.update({key: metric})
 
     def getMetric(self, name: str) -> Metric:

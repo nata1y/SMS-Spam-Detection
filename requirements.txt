@@ -10,5 +10,8 @@ flasgger
 dvc==2.1.0
 dvc[gdrive]
 mllint
+pylint
+pylint-exit
+anybadge
 requests
 POT

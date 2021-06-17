@@ -38,6 +38,17 @@ test:
     - pip install tox flake8
     - tox -e python flake8
 
+lint:
+  script:
+    - pylint --output-format=text train_model deploy_model monitoring datadrift_detect production_endpoint | tee pylint.txt || pylint-exit $?
+    - score=$(sed -n 's/^Your code has been rated at \([-0-9.]*\)\/.*/\1/p' pylint.txt)
+    - echo "Pylint score was $score"
+    - mkdir public
+    - anybadge --value=$score --file=public/pylint.svg pylint
+  artifacts:
+    paths:
+      - public/pylint.svg
+    
 run:
   script:
     - python setup.py bdist_wheel
