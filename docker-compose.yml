@@ -7,6 +7,9 @@ services:
   server:
     build: .
     container_name: server-sms
+    volumes: 
+      - ./output:/root/output
+      - ./dataset:/root/dataset
     ports:
       - 8080:8080
     expose:
@@ -15,6 +18,8 @@ services:
   prometheus:
     image: prom/prometheus
     container_name: prometheus-sms
+    depends_on:
+      - server
     volumes:
      - ./prometheus-config:/prometheus-config
      - prometheus_data:/data
@@ -26,8 +31,6 @@ services:
       - 9090:9090
     expose:
       - "9090"
-    depends_on:
-      - server
 
   grafana:
     image: grafana/grafana
