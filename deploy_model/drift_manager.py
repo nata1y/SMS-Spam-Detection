@@ -11,7 +11,6 @@ from deploy_model.util import load_best_clf
 class DriftManager:
     # 100 is minimum
     window_size = 500
-
     metricsManager: MetricsManager
 
     calls: int
