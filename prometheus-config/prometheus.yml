@@ -4,7 +4,7 @@ global:
     monitor: 'datadrift-detection-monitor'
 
 rule_files:
-- "alertmanager/alert.rules"
+- "alerts/alert.rules"
 
 scrape_configs:
   - job_name: 'monitoring'

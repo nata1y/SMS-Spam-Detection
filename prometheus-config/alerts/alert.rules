@@ -29,12 +29,3 @@ groups:
     annotations:
       summary: "[Drift Detected] Regression model detected drift!"
       description: "[Drift Detected] Regression model detected drift!"
-
-  - alert: driftdetection_test_metric
-    expr: driftdetection_test_metric > 6 #threshold = 6
-    for: 1s
-    labels:
-      severity: page
-    annotations:
-      summary: "[Drift Detected] random detected drift!"
-      description: "[Drift Detected] random detected drift!"
