@@ -1,15 +1,16 @@
 """
-Only [a-zA-Z0-9:_] are valid in metric names, any other characters should be sanitized to an underscore.
-The _sum, _count, _bucket and _total suffixes are used by Summaries, Histograms and Counters. Unless you’re producing one of those, avoid these suffixes.
-_total is a convention for counters, you should use it if you’re using the COUNTER type.
-The process_ and scrape_ prefixes are reserved.
-Avoid type as a label name, it’s too generic and often meaningless. You should also try where possible to avoid names that are likely to clash with target labels, such as region, zone, cluster, availability_zone, az, datacenter, dc, owner, customer, stage, service, environment and env. If, however, that’s what the application calls some resource, it’s best not to cause confusion by renaming it.
-
+Only [a-zA-Z0-9:_] are valid in metric names, any other characters should be sanitized to an
+underscore. The _sum, _count, _bucket and _total suffixes are used by Summaries, Histograms
+and Counters. Unless you’re producing one of those, avoid these suffixes. _total is a convention
+for counters, you should use it if you’re using the COUNTER type. The process_ and scrape_ prefixes
+are reserved. Avoid type as a label name, it’s too generic and often meaningless. You should also
+try where possible to avoid names that are likely to clash with target labels, such as region,
+zone, cluster, availability_zone, az, datacenter, dc, owner, customer, stage, service, environment
+and env. If, however, that’s what the application calls some resource, it’s best not to cause
+confusion by renaming it.
 """
-import pandas as pd
-
-
 class Metric:
+    '''Class Metric for datastructure for Prometheus and Grafana.'''
     name: str = None
     value = None
     smoothed_value = None
@@ -29,16 +30,14 @@ class Metric:
 
     def __eq__(self, other):
         if isinstance(other, Metric):
-            return self.getFullName() == other.getFullName()
+            return self.get_full_name() == other.get_full_name()
         return False
 
     def __str__(self):
-        return "Metric[{}, {}, {}]".format(self.getName(),
-                                           self.getDescription(),
-                                           self.getValue()
-                                           )
+        return "Metric[{}, {}, {}]".format(self.get_name(),
+            self.get_description(), self.get_value())
 
-    def getFullName(self) -> str:
+    def get_full_name(self) -> str:
         """
         Get the full name of the metric: {name}
         https://prometheus.io/docs/practices/naming/
@@ -50,27 +49,55 @@ class Metric:
         """
         return "{}".format(self.name)
 
-    def getName(self) -> str:
+    def get_name(self) -> str:
+        '''
+        Get the name of the metric.
+        :return: name string of metric.
+        '''
         return self.name
 
-    def setName(self, name: str):
+    def set_name(self, name: str):
+        '''
+        Set the name of the metric.
+        :param: name string of the metric.
+        :return: void
+        '''
         self.name = name
 
-    def getValue(self, smoothed=True):
+    def get_value(self, smoothed=True):
+        '''
+        Get the value of the metric.
+        :param: smoothed boolean which value to retrieve.
+        :return: value of smoothed value.
+        '''
         if smoothed:
             return self.smoothed_value
         return self.value
 
-    def setValue(self, value):
+    def set_value(self, value):
+        '''
+        Set the value of the metric.
+        :param: value to set as metric
+        :return: void
+        '''
         self.value = value
 
-    def setSmoothValue(self, value):
+    def set_smooth_value(self, value):
+        '''
+        Set smoothed value of the metric.
+        :param: value to set as metric
+        :return: void
+        '''
         self.smoothed_value = value
 
-    def getDescription(self):
+    def get_description(self):
+        '''
+        Get the description of the metric.
+        :return: A string with description
+        '''
         return self.description
 
-    def setDescription(self, description: str):
+    def set_description(self, description: str):
         """
         Set the description.
         :param description: description of a metric.
@@ -78,27 +105,27 @@ class Metric:
         """
         self.description = description
 
-    def getPrometheusString(self) -> str:
+    def get_prometheus_string(self) -> str:
         """
-        Get a string representing the metric that can be output to Prometheus .
-        :return: A string summarising the metric that can be read by Prometheus
+        Get a string representing the metric that can be output to Prometheus.
+        :return: A string summarising the metric that can be read by Prometheus.
         """
-        metricString: str = ""
+        metric_string: str = ""
         if self.description != "":
-            metricString += "#{}\n".format(self.description)
-        metricString += "{} {}\n".format(self.getFullName(), self.value)
-        return metricString
+            metric_string += "#{}\n".format(self.description)
+        metric_string += "{} {}\n".format(self.get_full_name(), self.value)
+        return metric_string
 
 
 class MetricsManager:
-    # key= (fullname)
-    # value = Metric
-    metrics = None
+    '''Manager class for the metrics, listing them.'''
+    metrics: dict()
 
     def __init__(self):
         self.metrics = {}
 
-    def __getMetricKey(self, name: str) -> str:
+    @staticmethod
+    def _get_metric_key(name: str) -> str:
         """
         Get the key of the corresponding metric.
         This is the same as the metric-naming for prometheus
@@ -106,7 +133,7 @@ class MetricsManager:
         """
         return "{}".format(name)
 
-    def newMetric(self, name: str, description="", value="", smooth_value=""):
+    def new_metric(self, name: str, description="", value="", smooth_value=""):
         """
         Define a new metric for Prometheus
         :param name: Name of the metric
@@ -114,11 +141,11 @@ class MetricsManager:
         :param value: Initial value of the metric
         :return: void
         """
-        key = self.__getMetricKey(name)
+        key = MetricsManager._get_metric_key(name)
         metric: Metric = Metric(name, description, value, smooth_value)
         self.metrics.update({key: metric})
 
-    def updateMetric(self, name: str, value, smooth_value):
+    def update_metric(self, name: str, value, smooth_value=""):
         """
         Update an existing metric.
         If the metric does not exist, it creates a new one.
@@ -126,7 +153,7 @@ class MetricsManager:
         :param value: New value of the metric
         :return: void
         """
-        key = self.__getMetricKey(name)
+        key = MetricsManager._get_metric_key(name)
         metric = self.metrics.get(key)
         if metric is None:
             metric = Metric(name, "", value, smooth_value)
@@ -135,16 +162,16 @@ class MetricsManager:
             metric.setSmoothValue(smooth_value)
         self.metrics.update({key: metric})
 
-    def getMetric(self, name: str) -> Metric:
+    def get_metric(self, name: str) -> Metric:
         """
         Get a metric of choice. It returns None if no metric with corresponding name exists
         :param name: Name of the metric
         :return: Corresponding Metric
         """
-        key = self.__getMetricKey(name)
+        key = MetricsManager._get_metric_key(name)
         return self.metrics.get(key)
 
-    def getPrometheusMetricsString(self) -> str:
+    def get_prometheus_metrics_string(self) -> str:
         """
         Get a string sumarising all metrics that can be read by Prometheus
         :return: A string that can be read by Prometheus.

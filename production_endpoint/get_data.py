@@ -14,9 +14,10 @@ DIFF_DIR = "dataset"
 EXTRACT_DIR = "dataset/regression"
 
 def get_data():
+    '''Get the production data.'''
     zip_path, _ = urllib.request.urlretrieve(URL)
-    with zipfile.ZipFile(zip_path, "r") as f:
-        f.extractall(EXTRACT_DIR)
+    with zipfile.ZipFile(zip_path, "r") as file:
+        file.extractall(EXTRACT_DIR)
 
     remove_file(EXTRACT_DIR + '/SMSSpamCollection_diff')
 
@@ -30,6 +31,6 @@ def get_data():
             if i >= ignore:
                 dest.write(line)
             i = i + 1
-    
+
 if __name__ == 'main':
     get_data()

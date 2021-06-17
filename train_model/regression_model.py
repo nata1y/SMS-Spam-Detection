@@ -1,3 +1,4 @@
+# pylint: disable=W0611
 '''Regression model trained on different types of drift accuracy on original model.'''
 import numpy as np
 
@@ -7,8 +8,8 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 from train_model.text_preprocessing import prepare, _extract_message_len, _text_process
-from deploy_model.util import load_best_clf
 from train_model.util import load_data, DATASET_DIR, DATA_DRIFT_DIR
+from deploy_model.util import load_best_clf
 
 class RegressionModel():
     '''Class containing the Regression Model training methods.'''
