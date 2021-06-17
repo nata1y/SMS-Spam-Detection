@@ -38,6 +38,14 @@ test:
     - pip install tox flake8
     - tox -e python flake8
 
+lint:
+  script:
+    - pylint train_model
+    - pylint deploy_model
+    - pylint monitoring
+    - pylint datadrift_detect
+    - pylint production_endpoint
+    
 run:
   script:
     - python setup.py bdist_wheel
