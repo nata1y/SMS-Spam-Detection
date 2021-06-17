@@ -9,7 +9,9 @@ from deploy_model.util import load_best_clf
 
 
 class DriftManager:
-    window_size = 500
+    # 100 is minimum
+    window_size = 100
+
     metricsManager: MetricsManager
 
     calls: int
@@ -79,7 +81,7 @@ class DriftManager:
                     self.metricsManager.updateMetric("driftdetection_{}_result_{}".format(name, i), v)
             else:
                 analysis_csv_row += f"{dist},"
-                self.metricsManager.updateMetric("driftdetection_{}_result", dist)
+                self.metricsManager.updateMetric("driftdetection_{}_result".format(name), dist)
 
         nlp_stats, loss_stats, regression_stats = get_all_stats(
             self.real_labels[-self.window_size:],
