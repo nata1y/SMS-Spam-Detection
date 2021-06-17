@@ -29,4 +29,3 @@ with open(EXTRACT_DIR + '/SMSSpamCollection', 'r') as src, \
         if i >= ignore:
             dest.write(line)
         i = i + 1
-    
