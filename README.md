@@ -1,3 +1,5 @@
+![pylint](https://NAMESPACE.gitlab.io/pyling.svg)
+
 # SMS Spam Detection Using Machine Learning
 
 This project is used a starting point for the course [*Release Engineering for Machine Learning Applications* (REMLA)] taught at the Delft University of Technology by [Prof. Luís Cruz] and [Prof. Sebastian Proksch].
