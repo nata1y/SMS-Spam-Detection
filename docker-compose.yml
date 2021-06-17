@@ -7,6 +7,9 @@ services:
   server:
     build: .
     container_name: server-sms
+    volumes: 
+      - ./output:/root/output
+      - ./dataset:/root/dataset
     ports:
       - 8080:8080
     expose:

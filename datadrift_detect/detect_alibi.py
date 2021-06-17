@@ -8,7 +8,6 @@ from train_model.text_preprocessing import _load_data, _preprocess, _label_encod
 from train_model.generate_drifts import create_random_drift
 
 def _load_random_drift():
-    print("Loading random drift...")
     create_random_drift()
     messages = pd.read_csv(
         'dataset/drifts/drift_random.txt',

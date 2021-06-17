@@ -14,6 +14,7 @@ a) Clone repo.
 $ git clone https://gitlab.com/nata1y/SMS-Spam-Detection
 $ cd SMS-Spam-Detection
 $ mkdir output
+$ mkdir dataset
 ```
 
 b) Install dependencies.
@@ -55,6 +56,9 @@ For Linux
 ```
 $ docker-compose -f docker-compose.train.yml build
 $ docker-compose -f docker-compose.train.yml up -d && ./get_training_data.sh && docker-compose -f docker-compose.train.yml down
+
+$ docker-compose -f docker-compose.train.yml up -d && ./get_training_data.bat && docker-compose -f docker-compose.train.yml down
+
 ```
 For windows:
 ```
