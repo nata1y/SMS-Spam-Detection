@@ -10,7 +10,7 @@ from deploy_model.util import load_best_clf
 
 class DriftManager:
     # 100 is minimum
-    window_size = 500
+    window_size = 100
     metricsManager: MetricsManager
 
     calls: int
@@ -72,6 +72,7 @@ class DriftManager:
         for detection in _detect_drift(full_set, self.preprocessed[-self.window_size:]):
             name = detection['meta']['name']
             drift_bool = detection['data']['is_drift']
+            self.metricsManager.updateMetric("driftdetection_{}_is_drift".format(name), drift_bool, drift_bool)
             analysis_csv_row += f"{drift_bool},"
             dist = detection['data']['distance']
             if type(dist) is np.ndarray:
