@@ -96,16 +96,18 @@ class DriftManager:
         for detection in detect_drift(full_set, self.preprocessed[-self.window_size:]):
             name = detection['meta']['name']
             drift_bool = detection['data']['is_drift']
+            self.metric_manager.update_metric(
+                "driftdetection_{}_is_drift".format(name), drift_bool, drift_bool)
             analysis_csv_row += f"{drift_bool},"
             dist = detection['data']['distance']
             if isinstance(dist, np.ndarray):
-                for i, value in enumerate(dist):
-                    analysis_csv_row += f"{value},"
-                    self.metrics_manager.update_metric(
-                        "driftdetection_{}_result_{}".format(name, i), value, value)
+                for i, v in enumerate(dist):
+                    analysis_csv_row += f"{v},"
+                    self.metric_manager.update_metric(
+                        "driftdetection_{}_result_{}".format(name, i), v, v)
             else:
                 analysis_csv_row += f"{dist},"
-                self.metrics_manager.update_metric(
+                self.metric_manager.update_metric(
                     "driftdetection_{}_result".format(name), dist, dist)
         return analysis_csv_row
 
