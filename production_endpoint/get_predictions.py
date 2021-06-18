@@ -68,23 +68,23 @@ def _load_data():
 
 def main():
     '''Calls the POST requests for different datasets.'''
-    # vanilla_train = load_data(DATASET_DIR + 'SMSSpamCollection')
+    vanilla_train = load_data(DATASET_DIR + 'SMSSpamCollection')
 
-    # print("Starting vanilla train run")
-    # for i, row in vanilla_train.iterrows():
-    #     progress_bar(i, len(vanilla_train))
-    #     requests.post("http://127.0.0.1:8080/predict", headers={'Content-Type': 'application/json'},
-    #         json={'sms': row['message'], 'real_label': row['label'],
-    #         'drift_type': 'VANILLA_TRAINING'})
+    print("Starting vanilla train run")
+    for i, row in vanilla_train.iterrows():
+        progress_bar(i, len(vanilla_train))
+        requests.post("http://127.0.0.1:8080/predict", headers={'Content-Type': 'application/json'},
+            json={'sms': row['message'], 'real_label': row['label'],
+            'drift_type': 'VANILLA_TRAINING'})
 
-    # vanilla_test = _load_data()
+    vanilla_test = _load_data()
 
-    # print("Starting vanilla test run")
-    # for i, row in vanilla_test.iterrows():
-    #     progress_bar(i, len(vanilla_test))
-    #     requests.post("http://127.0.0.1:8080/predict", headers={'Content-Type': 'application/json'},
-    #         json={'sms': row['message'], 'real_label': row['label'],
-    #         'drift_type': 'VANILLA_INCOMING'})
+    print("Starting vanilla test run")
+    for i, row in vanilla_test.iterrows():
+        progress_bar(i, len(vanilla_test))
+        requests.post("http://127.0.0.1:8080/predict", headers={'Content-Type': 'application/json'},
+            json={'sms': row['message'], 'real_label': row['label'],
+            'drift_type': 'VANILLA_INCOMING'})
 
     drift_types = DriftTypes()
     drifts = drift_types.get_drifts()
