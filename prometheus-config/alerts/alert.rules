@@ -1,0 +1,56 @@
+groups:
+- name: Drift Detection
+  rules:
+  - alert: NLP model detected Drfit
+    expr: driftdetection_nlp_results > 2.775366218 #nlp_value threshold = 2.775366218 (0.4 normalized)
+    for: 1s
+    labels:
+      severity: page
+    annotations:
+      summary: "[Drift Detected] NLP model detected drift!"
+      description: "[Drift Detected] NLP model detected drift!"
+
+  - alert: Loss model detected Drift
+    expr: driftdetection_loss_results > 0.417852091  #loss_value threshold = 0.417852091 (0.7 normalized)
+    for: 1s
+    labels:
+      severity: page
+    annotations:
+      summary: "[Drift Detected] Loss model detected drift!"
+      description: "[Drift Detected] Loss model detected drift!"
+
+  - alert: Regression Model Detected Drift
+    expr: driftdetection_regression_results > 0.700956254 #regression_value threshold = 0.700956254 (0.6 normalized)
+    for: 1s
+    labels:
+      severity: page
+    annotations:
+      summary: "[Drift Detected] Regression model detected drift!"
+      description: "[Drift Detected] Regression model detected drift!"
+
+  - alert: MMDDriftTF detected Drift
+    expr:  driftdetection_MMDDriftTF_is_drift == 1
+    for: 1s
+    labels:
+      severity: page
+    annotations:
+      summary: "[Drift Detected] MMDDriftTF detected drift!"
+      description: "[Drift Detected] MMDDriftTF detected drift!"
+
+  - alert: KSDrift detected Drift
+    expr: driftdetection_KSDrift_is_drift == 1
+    for: 1s
+    labels:
+      severity: page
+    annotations:
+      summary: "[Drift Detected] KSDrift detected drift!"
+      description: "[Drift Detected] KSDrift detected drift!"
+
+  - alert: ChiSquareDrift detected Drift
+    expr: driftdetection_ChiSquareDrift_is_drift == 1
+    for: 1s
+    labels:
+      severity: page
+    annotations:
+      summary: "[Drift Detected] ChiSquareDrift detected drift!"
+      description: "[Drift Detected] ChiSquareDrift detected drift!"

@@ -1,15 +1,12 @@
 global:
-  scrape_interval:     15s
+  scrape_interval: 1s
   external_labels:
     monitor: 'datadrift-detection-monitor'
 
 rule_files:
-- "alertmanager/alert.rules"
+- "alerts/alert.rules"
 
 scrape_configs:
-  - job_name: 'monitoring'
-
-    scrape_interval: 1s
-
+  - job_name: 'datadrift monitoring'
     static_configs:
       - targets: ['server-sms:8080']
