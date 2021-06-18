@@ -24,6 +24,7 @@ class DriftTypes():
         SPAM = 'drift_spam_only.txt'
     )
     current_name = 'RANDOM'
+    window_size = 100 # dataset length ranges from 3000-300
 
     def get_drifts(self):
         '''
@@ -98,7 +99,7 @@ def main():
                 headers={'Content-Type': 'application/json'},
                 json={'sms': row['message'], 'label': row['label'], 'real_label': row['real_label'],
                 'drift_type': drift_types.get_current_name(),
-                'window_size': round(len(raw_drift) / 6)})
+                'window_size': drift_types.window_size})
 
 
 if __name__ == "__main__":

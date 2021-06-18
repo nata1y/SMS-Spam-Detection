@@ -22,7 +22,7 @@ class DriftManager:
 
     def __init__(self, metricsManager: MetricsManager) -> None:
         self.metrics_manager = metricsManager
-        self.window_size = 500 # 100 is minimum
+        self.window_size = 100 # 100 is minimum
         self.data = np.array([])
         self.preprocessed = np.array([])
         self.drift_type = ''
