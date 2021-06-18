@@ -17,7 +17,7 @@ class DriftTypes():
 
     drifts = dict(
         RANDOM = 'drift_random_0.5.txt',
-        FLIP = 'drift_random_0.5.txt',
+        FLIP = 'drift_flip.txt',
         MUTATION = 'drift_mutation.txt',
         CONCEPT = 'drift_concept.txt',
         HAM = 'drift_ham_only.txt',

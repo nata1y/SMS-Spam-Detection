@@ -7,14 +7,15 @@ import nltk
 from nltk.tokenize import word_tokenize
 
 from deploy_model.util import ensure_path_exists
+from train_model.util import DATA_DRIFT_DIR, DATASET_DIR
 
 nltk.download('punkt')
-ensure_path_exists('dataset/drifts')
+ensure_path_exists(DATA_DRIFT_DIR)
 
 
 def import_messages():
     '''Import the messages from the training dataset.'''
-    return [line.rstrip() for line in open('dataset/SMSSpamCollection')]
+    return [line.rstrip() for line in open(DATASET_DIR + 'SMSSpamCollection')]
 
 def clean(text):
     '''Clean up a piece of text.'''
@@ -29,7 +30,7 @@ def clean(text):
 
 def create_drift_flip():
     '''Data drift by flipping the labels.'''
-    with open("dataset/drifts/drift_flip.txt", "w") as file:
+    with open(DATA_DRIFT_DIR + "drift_flip.txt", "w") as file:
         messages = import_messages()
         for msg in messages:
             splitted = msg.split("\t")
@@ -43,7 +44,7 @@ def create_drift_flip():
 
 def create_random_drift(probability):
     '''Data drift by randomly changing labels.'''
-    with open("dataset/drifts/drift_random_" + str(probability) + ".txt", "w") as file:
+    with open(DATA_DRIFT_DIR + "drift_random_" + str(probability) + ".txt", "w") as file:
         messages = import_messages()
         for msg in messages:
             splitted = msg.split("\t")
@@ -58,7 +59,7 @@ def create_random_drift(probability):
 
 def create_drift_mutation():
     '''Data drift by mutation of ham messages by inserting new words from the spam messages.'''
-    with open("dataset/drifts/drift_mutation.txt", "w") as file:
+    with open(DATA_DRIFT_DIR + "drift_mutation.txt", "w") as file:
         messages = import_messages()
         total_words = 0
         word_dict = {}
@@ -92,7 +93,7 @@ def create_drift_mutation():
 def create_drift_concept():
     '''Concept drift by reducing training size and splitting the dataset (see paper on
     Concept drift for emails) previous papers used this approach.'''
-    with open("dataset/drifts/drift_concept.txt", "w") as file:
+    with open(DATA_DRIFT_DIR + "drift_concept.txt", "w") as file:
         messages = import_messages()
         for msg in messages[:int(len(messages)/2)]:
             splitted = msg.split("\t")
@@ -103,7 +104,7 @@ def create_drift_concept():
 
 def create_drift_spam():
     '''Only have spam in data, introducing ham later on can possibly cause a drift.'''
-    with open("dataset/drifts/drift_spam_only.txt", "w") as file:
+    with open(DATA_DRIFT_DIR + "drift_spam_only.txt", "w") as file:
         messages = import_messages()
         for msg in messages:
             splitted = msg.split("\t")
@@ -114,7 +115,7 @@ def create_drift_spam():
 
 def create_drift_ham():
     '''Vice versa to create_drift_spam.'''
-    with open("dataset/drifts/drift_ham_only.txt", "w") as file:
+    with open(DATA_DRIFT_DIR + "drift_ham_only.txt", "w") as file:
         messages = import_messages()
         for msg in messages:
             splitted = msg.split("\t")
