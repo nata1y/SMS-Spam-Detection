@@ -158,8 +158,8 @@ class MetricsManager:
         if metric is None:
             metric = Metric(name, "", value, smooth_value)
         else:
-            metric.setValue(value)
-            metric.setSmoothValue(smooth_value)
+            metric.set_value(value)
+            metric.set_smooth_value(smooth_value)
         self.metrics.update({key: metric})
 
     def get_metric(self, name: str) -> Metric:

@@ -36,5 +36,5 @@ class NLPModel():
     def train_nlp_model(self, messages):
         '''Trains the model.'''
         gold_standard = self.model.fit_transform(messages['message'])
-        dump(self.model, self.data_path)
-        dump(gold_standard, self.model_path)
+        dump(self.model, self.model_path)
+        dump(gold_standard, self.data_path)
