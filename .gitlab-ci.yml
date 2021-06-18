@@ -30,6 +30,7 @@ before_script:
 test:
   script:
     - python train_model/get_data.py
+    - ls dataset/
     - python train_model/text_preprocessing.py
     - python train_model/text_classification.py
     - python production_endpoint/get_data.py
