@@ -76,10 +76,10 @@ def get_regression_predictions(percentiles, drift_type):
 
     now = datetime.now()
     reg_model = load('output/regression/regression_model.joblib')
-    res = reg_model.predict(percentiles)
+    res = min(1.0, max(0.0, reg_model.predict(percentiles)[0]))
     stats_regression = stats_regression.append({
                     "date": now.strftime("%m-%d-%Y"),
-                    "predicted_performance": res[0],
+                    "predicted_performance": res,
                     "drift_type": drift_type
                 }, ignore_index=True)
     stats_regression.to_csv('output/stats/regression_stats.csv', index=False)
