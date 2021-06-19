@@ -3,7 +3,7 @@ import requests
 import pandas as pd
 
 from deploy_model.util import ensure_path_exists, progressBar
-from train_model.text_preprocessing import _load_data as _load_training_data
+from train_model.text_preprocessing import load_data as _load_training_data
 from production_endpoint.generate_drifts import generate_all_drifts
 
 drift_directory = 'dataset/drifts_incoming/'

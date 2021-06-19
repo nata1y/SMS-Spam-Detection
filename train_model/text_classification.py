@@ -19,7 +19,7 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import train_test_split, cross_val_score
 
 from deploy_model.util import ensure_path_exists
-from train_model.text_preprocessing import _load_data
+from train_model.text_preprocessing import load_data
 from train_model.nlp_sms_model import train_nlp_model, doc_distance
 
 pd.set_option('display.max_colwidth', None)
@@ -57,7 +57,7 @@ def get_losses(losses, amount_subsamples):
 
 def main():
 
-    raw_data = _load_data()
+    raw_data = load_data()
     train_nlp_model(raw_data)
     preprocessed_data = load('output/preprocessed_data.joblib')
 

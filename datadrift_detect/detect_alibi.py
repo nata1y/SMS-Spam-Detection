@@ -4,7 +4,7 @@ import numpy as np
 from alibi_detect.cd import KSDrift, ClassifierUncertaintyDrift, MMDDrift, ChiSquareDrift
 
 from production_endpoint.get_predictions import _load_data as _load_prediction_data
-from train_model.text_preprocessing import _load_data, _preprocess, _label_encoder
+from train_model.text_preprocessing import load_data, _preprocess, _label_encoder
 from train_model.generate_drifts import create_random_drift
 
 def _load_random_drift():
@@ -28,7 +28,7 @@ def _get_num_drifts(num_values, p_val):
     return mmd_drift
 
 def _detect_drift(data, preprocessed=[]):
-    raw_real_data = _load_data()
+    raw_real_data = load_data()
     p_val = 0.05
     cds = _get_drifts(raw_real_data.values, p_val)
     detections = np.array([])

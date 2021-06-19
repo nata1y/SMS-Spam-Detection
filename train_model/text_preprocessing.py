@@ -21,7 +21,7 @@ nltk.download('stopwords')
 ensure_path_exists('output')
 
 
-def _load_data():
+def load_data():
     messages = pd.read_csv(
         'dataset/SMSSpamCollection',
         sep='\t',
@@ -32,7 +32,7 @@ def _load_data():
 
 def _label_encoder():
     labels = np.array([])
-    for idx, row in _load_data().iterrows():
+    for idx, row in load_data().iterrows():
         if row[0] == 'ham':
             labels = np.append(labels, [0], axis=0)
         elif row[0] == 'spam':
@@ -99,7 +99,7 @@ def prepare(message):
 
 
 def main():
-    messages = _load_data()
+    messages = load_data()
     print('\n################### Processed Messages ###################\n')
     with pd.option_context('expand_frame_repr', False):
         print(messages)
