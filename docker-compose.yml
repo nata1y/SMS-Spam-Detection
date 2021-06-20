@@ -42,8 +42,20 @@ services:
       - ./grafana-config:/grafana-config
     command:
       - '--config=/grafana-config/grafana.ini'
+    environment:
+      GF_RENDERING_SERVER_URL: http://renderer:8081/render
+      GF_RENDERING_CALLBACK_URL: http://grafana:3000/
     ports:
       - 3000:3000
+
+  renderer:
+    image: grafana/grafana-image-renderer
+    container_name: grafana-renderer-sms
+    depends_on:
+      - grafana
+    ports:
+      - 8081:8081
+
 
 volumes:
   prometheus_data: {}
