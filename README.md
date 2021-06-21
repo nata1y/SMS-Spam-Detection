@@ -17,6 +17,8 @@ $ mkdir output
 $ mkdir dataset
 ```
 
+The easiest way to run our project is using the instructions located in b3!
+
 b) Install dependencies.
 
 ```
@@ -52,18 +54,20 @@ $ python deploy_model/serve_model.py
 
 b3) Or, use docker-compose and automatically train and host.
 
-For Linux
+Be aware, the regression model is trained in this step and takes a while.
+
+For Linux:
 ```
 $ docker-compose -f docker-compose.train.yml build
 $ docker-compose -f docker-compose.train.yml up -d && ./get_training_data.sh && docker-compose -f docker-compose.train.yml down
 ```
-For windows:
+For Windows:
 ```
 $ docker-compose -f docker-compose.train.yml build
 $ docker-compose -f docker-compose.train.yml up -d && ./get_training_data.bat && docker-compose -f docker-compose.train.yml down
 ```
 
-From now on, use this command to run the system without retraining everything
+From now on, use this command to run the system without retraining everything.
 ```
 docker-compose up --build
 ```
@@ -71,6 +75,7 @@ docker-compose up --build
 e) Production endpoint
 
 Retrieves and splits the dataset from the first 1000 labels on which the model is trained. 
+Generate the drifts based on the incoming data for experimentation.
 Get the predictions via HTTP requests from the model like in an actual deployment setup.
 
 NOTE: to get predictions from inside another docker container use `docker run -it --rm -v "$(pwd)":/root/project --net=host docker-sms`, since the port is already opened for the server, but you want to connect to its local network.
@@ -91,6 +96,8 @@ $ curl -X POST "http://127.0.0.1:8080/predict" -H  "Content-Type: application/js
 ```
 
 Alternatively, you can access the UI using your browser: http://127.0.0.1:8080/apidocs
+To view Prometheus you can navigate to http://127.0.0.1:9090
+To view Grafana you can navigate to http://127.0.0.1:3000/. You then need to link the Prometheus api as dataset by setting the host as http://prometheus:9090/ and add the relavent metrics to a new dashboard. These settings are then saved for future use.
 
 [*Release Engineering for Machine Learning Applications* (REMLA)]: https://se.ewi.tudelft.nl/remla/ 
 [Prof. Luís Cruz]: https://luiscruz.github.io/
