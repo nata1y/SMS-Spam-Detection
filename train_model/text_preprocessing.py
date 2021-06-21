@@ -2,8 +2,8 @@
 Preprocess the data to be trained by the learning algorithm.
 Creates files `preprocessor.joblib` and `preprocessed_data.joblib`
 """
-import nltk
 import string
+import nltk
 import pandas as pd
 import numpy as np
 
@@ -16,28 +16,10 @@ from sklearn.pipeline import make_union, make_pipeline
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 
 from deploy_model.util import ensure_path_exists
+from train_model.util import DATASET_DIR, load_data
 
 nltk.download('stopwords')
 ensure_path_exists('output')
-
-
-def load_data():
-    messages = pd.read_csv(
-        'dataset/SMSSpamCollection',
-        sep='\t',
-        names=['label', 'message']
-    )
-    return messages
-
-
-def _label_encoder():
-    labels = np.array([])
-    for idx, row in load_data().iterrows():
-        if row[0] == 'ham':
-            labels = np.append(labels, [0], axis=0)
-        elif row[0] == 'spam':
-            labels = np.append(labels, [1], axis=0)
-    return labels
 
 
 def _text_process(data):
@@ -65,7 +47,7 @@ def _text_process(data):
 
 
 def _extract_message_len(data):
-    # return as np.array and reshape so that it works with make_union
+    '''Return as np.array and reshape so that it works with make_union.'''
     return np.array([len(message) for message in data]).reshape(-1, 1)
 
 
@@ -85,21 +67,21 @@ def _preprocess(messages):
     )
 
     preprocessed_data = preprocessor.fit_transform(messages['message'])
-    le = preprocessing.LabelEncoder()
-    le.fit(messages['label'])
+    label_encoder = preprocessing.LabelEncoder()
+    label_encoder.fit(messages['label'])
     dump(preprocessor, 'output/preprocessor.joblib')
     dump(preprocessed_data, 'output/preprocessed_data.joblib')
-    dump(le, 'output/label_encoder.joblib')
+    dump(label_encoder, 'output/label_encoder.joblib')
     return preprocessed_data
 
-
 def prepare(message):
+    '''Prepare a message using the preprocessor.'''
     preprocessor = load('output/preprocessor.joblib')
     return preprocessor.transform([message])
 
-
 def main():
-    messages = load_data()
+    '''Main function preprocessing all train data.'''
+    messages = load_data(DATASET_DIR + 'SMSSpamCollection')
     print('\n################### Processed Messages ###################\n')
     with pd.option_context('expand_frame_repr', False):
         print(messages)

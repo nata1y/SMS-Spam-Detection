@@ -1,4 +1,4 @@
-![pylint](https://nata1y.gitlab.io/SMS-Spam-Detection/pyling.svg)
+<!-- ![pylint](https://nata1y.gitlab.io/SMS-Spam-Detection/pyling.svg) -->
 
 # SMS Spam Detection Using Machine Learning
 
