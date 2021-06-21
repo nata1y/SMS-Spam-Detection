@@ -36,12 +36,13 @@ def create_drift_flip():
         for msg in messages:
             splitted = msg.split("\t")
             label = splitted[0]
+            real_label = label
             msg = splitted[1]
             if label == "spam":
                 label = "ham"
             elif label == "ham":
                 label = "spam"
-            file.write(f'{label}\t{msg}\n')
+            file.write(f'{label}\t{msg}\t{real_label}\n')
 
 def create_random_drift(probability):
     '''Data drift by randomly changing labels.'''
@@ -50,13 +51,14 @@ def create_random_drift(probability):
         for msg in messages:
             splitted = msg.split("\t")
             label = splitted[0]
+            real_label = label
             msg = splitted[1]
             if random.random() > probability:
                 if label == "spam":
                     label = "ham"
                 elif label == "ham":
                     label = "spam"
-            file.write(f'{label}\t{msg}\n')
+            file.write(f'{label}\t{msg}\t{real_label}\n')
 
 def create_drift_mutation():
     '''Data drift by mutation of ham messages by inserting new words from the spam messages.'''
@@ -85,11 +87,12 @@ def create_drift_mutation():
         for msg in messages:
             splitted = msg.split("\t")
             label = splitted[0]
+            real_label = label
             msg = splitted[1]
             if label == "ham":
                 for _ in range(0, 5):
                     msg += " " + random.choice(top_worst)
-            file.write(f'{label}\t{msg}\n')
+            file.write(f'{label}\t{msg}\t{real_label}\n')
 
 def create_drift_concept():
     '''Concept drift by reducing training size and splitting the dataset (see paper on
@@ -99,9 +102,10 @@ def create_drift_concept():
         for msg in messages[:int(len(messages)/2)]:
             splitted = msg.split("\t")
             label = splitted[0]
+            real_label = label
             msg = splitted[1]
 
-            file.write(f'{label}\t{msg}\n')
+            file.write(f'{label}\t{msg}\t{real_label}\n')
 
 def create_drift_spam():
     '''Only have spam in data, introducing ham later on can possibly cause a drift.'''
@@ -110,9 +114,10 @@ def create_drift_spam():
         for msg in messages:
             splitted = msg.split("\t")
             label = splitted[0]
+            real_label = label
             msg = splitted[1]
             if label == "spam":
-                file.write(f'{label}\t{msg}\n')
+                file.write(f'{label}\t{msg}\t{real_label}\n')
 
 def create_drift_ham():
     '''Vice versa to create_drift_spam.'''
@@ -121,9 +126,10 @@ def create_drift_ham():
         for msg in messages:
             splitted = msg.split("\t")
             label = splitted[0]
+            real_label = label
             msg = splitted[1]
             if label == "ham":
-                file.write(f'{label}\t{msg}\n')
+                file.write(f'{label}\t{msg}\t{real_label}\n')
 
 def generate_all_drifts():
     '''Generate all types of drifts based on the dataset.'''
