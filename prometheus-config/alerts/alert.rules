@@ -20,7 +20,7 @@ groups:
       description: "[Drift Detected] Loss model detected drift!"
 
   - alert: Regression Model Detected Drift
-    expr: driftdetection_regression_results > 0.700956254 #regression_value threshold = 0.700956254 (0.6 normalized)
+    expr: driftdetection_regression_results < 0.700956254 #regression_value threshold = 0.700956254 (0.6 normalized)
     for: 1s
     labels:
       severity: page
